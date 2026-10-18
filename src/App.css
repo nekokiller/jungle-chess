@@ -1,0 +1,26 @@
+/* 單欄：標題列、對話框、棋盤、圖例與按鈕。格子大小同時受螢幕寬、高限制，讓整個棋盤放得下。 */
+.app{
+  --cell:max(38px, min(68px, calc((100vw - 40px) / 7), calc((100dvh - 250px) / 9)));
+  display:grid; justify-items:center; gap:12px;
+  padding:16px max(16px, env(safe-area-inset-right, 0px)) 32px max(16px, env(safe-area-inset-left, 0px));
+}
+.top{width:calc(var(--cell) * 7); max-width:100%; display:flex; align-items:center; justify-content:space-between; gap:12px}
+.top h1{margin:0; font-family:var(--font-display); font-weight:400; font-size:28px; line-height:1.2}
+.turn{margin:0; display:flex; align-items:center; gap:8px; font-family:var(--font-display); font-size:17px}
+.turn b{font-weight:400; color:#fff; border-radius:999px; padding:2px 14px; background:var(--red)}
+.turn[data-side="blue"] b{background:var(--blue)}
+
+.bubble{
+  position:relative; width:calc(var(--cell) * 7); max-width:100%; min-height:3.4em; margin:0 0 6px;
+  display:flex; align-items:center; background:var(--surface); border:1px solid var(--line); border-radius:16px;
+  padding:8px 14px; font-family:var(--font-display); font-size:17px; line-height:1.4;
+}
+.bubble::after{content:""; position:absolute; left:28px; bottom:-8px; width:14px; height:14px; background:var(--surface); border-right:1px solid var(--line); border-bottom:1px solid var(--line); transform:rotate(45deg)}
+
+.controls{width:calc(var(--cell) * 7); max-width:100%; display:grid; gap:12px; margin-top:6px}
+.legend{display:flex; flex-wrap:wrap; gap:6px 16px; list-style:none; margin:0; padding:0; font-size:13px; color:var(--muted)}
+.legend li{display:flex; align-items:center; gap:6px}
+.sw{width:14px; height:14px; border-radius:4px; display:inline-block}
+.sw.w{background:var(--water-1)} .sw.t{background:var(--trap)} .sw.d{background:var(--den)}
+.actions{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px}
+.toggle{display:flex; align-items:center; gap:6px; font-size:14px; color:var(--muted); cursor:pointer}

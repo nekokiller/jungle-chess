@@ -1,0 +1,94 @@
+/* ---------- 結構 ---------- */
+.animal{position:relative}
+.animal .hop,.animal .lift,.animal .act,.animal .bob{width:100%; height:100%}
+.animal .bob{position:relative}
+.animal svg{display:block; width:100%; height:100%; overflow:visible}
+.animal .badge{position:absolute; inset:0}
+.animal .act{transform-origin:50% 88%}
+.animal .bob{transform-origin:50% 88%; animation:breathe 2.6s ease-in-out infinite; animation-delay:var(--d,0s)}
+.animal .lift{transition:transform .22s cubic-bezier(.3,1.6,.5,1)}
+
+/* ---------- 紅方實線外框、藍方珠子外框 ---------- */
+.animal .plate{fill:var(--red-plate)}
+.animal .ring{fill:none; stroke:var(--red); stroke-width:5}
+.animal .badge circle{fill:var(--red); stroke:#fff; stroke-width:2}
+.animal[data-side="blue"] .plate{fill:var(--blue-plate)}
+.animal[data-side="blue"] .ring{stroke:var(--blue); stroke-width:6.5; stroke-dasharray:.1 7.3; stroke-linecap:round}
+.animal[data-side="blue"] .badge circle{fill:var(--blue)}
+.animal .badge text{fill:#fff; font:700 13px var(--font-display)}
+.animal.trapped .badge circle{fill:#8b8b85}
+
+/* ---------- 表情 ---------- */
+.animal .eyes path{fill:none; stroke:#3a2a22; stroke-width:2.8; stroke-linecap:round; stroke-linejoin:round}
+.animal .mouth path{fill:none; stroke:#5a3426; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round}
+.animal .mouth-happy path{fill:#b8473f; stroke-width:1.4}
+.animal .mouth-scared ellipse{fill:#5a3426}
+.animal .eyes-happy,.animal .eyes-scared,.animal .eyes-squeeze,.animal .mouth-happy,.animal .mouth-scared,.animal .sweat{display:none}
+.animal[data-face="happy"] .eyes-open,.animal[data-face="happy"] .mouth-normal{display:none}
+.animal[data-face="happy"] .eyes-happy,.animal[data-face="happy"] .mouth-happy{display:inline}
+.animal[data-face="scared"] .eyes-open,.animal[data-face="scared"] .mouth-normal{display:none}
+.animal[data-face="scared"] .eyes-scared,.animal[data-face="scared"] .mouth-scared,.animal[data-face="scared"] .sweat{display:inline}
+.animal[data-face="hurt"] .eyes-open,.animal[data-face="hurt"] .mouth-normal{display:none}
+.animal[data-face="hurt"] .eyes-squeeze,.animal[data-face="hurt"] .mouth-scared{display:inline}
+.animal[data-face="scared"] .tongue,.animal[data-face="hurt"] .tongue{display:none}
+.animal .eye{transform-box:fill-box; transform-origin:center; transition:transform 70ms}
+.animal.blink .eye{transform:scaleY(.12)}
+.animal .sweat{animation:drip 1.1s ease-in infinite}
+
+/* ---------- 每隻動物的待機動作（架構文件 7.3） ---------- */
+.elephant .trunk{transform-origin:50px 54px; animation:trunk 3.2s ease-in-out infinite; animation-delay:var(--d,0s)}
+.elephant .ear-l{transform-origin:38px 50px; animation:flap 3.6s ease-in-out infinite; animation-delay:var(--d,0s)}
+.elephant .ear-r{transform-origin:62px 50px; animation:flap 3.6s ease-in-out infinite; animation-delay:var(--d,0s)}
+.lion .mane{transform-origin:50px 52px; animation:mane 3.4s ease-in-out infinite; animation-delay:var(--d,0s)}
+.tiger .tail{transform-origin:37px 76px; animation:swish 2.8s ease-in-out infinite reverse; animation-delay:var(--d,0s)}
+.leopard .paw{animation:lick 5s ease-in-out infinite; animation-delay:var(--d,0s)}
+.leopard .tongue{opacity:0; animation:lickTongue 5s ease-in-out infinite; animation-delay:var(--d,0s)}
+.wolf .head{transform-origin:50px 76px; animation:howl 7s ease-in-out infinite; animation-delay:var(--d,0s)}
+.wolf .ear-l{transform-origin:37px 42px; animation:perk 4.6s ease-out infinite; animation-delay:var(--d,0s)}
+.wolf .ear-r{transform-origin:63px 42px; animation:perk 4.6s ease-out infinite; animation-delay:calc(var(--d,0s) - .15s)}
+.dog .dtail{transform-origin:64px 74px; animation:wag .42s ease-in-out infinite alternate}
+.dog .tongue{transform-box:fill-box; transform-origin:50% 0; animation:pant .5s ease-in-out infinite alternate}
+.dog .ear-l{transform-origin:31px 37px; animation:flop 3.8s ease-in-out infinite; animation-delay:var(--d,0s)}
+.dog .ear-r{transform-origin:69px 37px; animation:flop 3.8s ease-in-out infinite reverse; animation-delay:var(--d,0s)}
+.cat .tail{transform-origin:63px 76px; animation:swish 2.3s ease-in-out infinite; animation-delay:var(--d,0s)}
+.cat .ear-r{transform-origin:62px 37px; animation:twitch 4.4s ease-out infinite; animation-delay:var(--d,0s)}
+.cat .wl{transform-origin:38px 61px} .cat .wr{transform-origin:62px 61px}
+.rat .wl{transform-origin:41px 65px} .rat .wr{transform-origin:59px 65px}
+.animal .wl{animation:whiskL 1.7s ease-in-out infinite; animation-delay:var(--d,0s)}
+.animal .wr{animation:whiskR 1.7s ease-in-out infinite; animation-delay:var(--d,0s)}
+.cat .wl,.cat .wr{animation-duration:3.4s}
+.rat .nose{transform-box:fill-box; transform-origin:center; animation:sniff 1.7s ease-in-out infinite; animation-delay:var(--d,0s)}
+.rat .rtail{transform-origin:62px 74px; animation:swish 3s ease-in-out infinite; animation-delay:var(--d,0s)}
+.rat .ear-l{transform-origin:38px 42px; animation:earL 5s ease-in-out infinite; animation-delay:var(--d,0s)}
+
+@keyframes breathe{0%,100%{transform:scale(1,1)}50%{transform:scale(.985,1.03)}}
+@keyframes mane{0%,100%{transform:rotate(-4deg) scale(1)}50%{transform:rotate(4deg) scale(1.045)}}
+@keyframes swish{0%,100%{transform:rotate(-9deg)}50%{transform:rotate(13deg)}}
+@keyframes twitch{0%,84%,100%{transform:rotate(0)}87%{transform:rotate(-15deg)}91%{transform:rotate(5deg)}95%{transform:rotate(-8deg)}}
+@keyframes whiskL{0%,40%,100%{transform:rotate(0)}50%{transform:rotate(7deg)}60%{transform:rotate(-3deg)}70%{transform:rotate(5deg)}}
+@keyframes whiskR{0%,40%,100%{transform:rotate(0)}50%{transform:rotate(-7deg)}60%{transform:rotate(3deg)}70%{transform:rotate(-5deg)}}
+@keyframes sniff{0%,38%,100%{transform:scale(1)}46%{transform:scale(1.28)}54%{transform:scale(1)}62%{transform:scale(1.28)}70%{transform:scale(1)}}
+@keyframes earL{0%,80%,100%{transform:rotate(0)}86%{transform:rotate(-10deg)}92%{transform:rotate(3deg)}}
+@keyframes trunk{0%,100%{transform:rotate(-7deg)}50%{transform:rotate(9deg)}}
+@keyframes flap{0%,60%,100%{transform:scaleX(1)}70%{transform:scaleX(.8)}80%{transform:scaleX(1.04)}90%{transform:scaleX(.86)}}
+@keyframes lick{0%,22%,78%,100%{transform:translate(0,0) rotate(0)}34%,66%{transform:translate(10px,-12px) rotate(-18deg)}44%,56%{transform:translate(11px,-13.5px) rotate(-10deg)}}
+@keyframes lickTongue{0%,36%,64%,100%{opacity:0}42%,58%{opacity:1}}
+@keyframes howl{0%,58%,82%,100%{transform:rotate(0) translateY(0)}64%,76%{transform:rotate(-7deg) translateY(-2px)}}
+@keyframes perk{0%,78%,100%{transform:scaleY(1) rotate(0)}84%{transform:scaleY(1.14) rotate(-4deg)}90%{transform:scaleY(.96) rotate(2deg)}}
+@keyframes wag{from{transform:rotate(-14deg)}to{transform:rotate(16deg)}}
+@keyframes pant{from{transform:scaleY(.85)}to{transform:scaleY(1.15)}}
+@keyframes flop{0%,70%,100%{transform:rotate(0)}80%{transform:rotate(8deg)}90%{transform:rotate(-3deg)}}
+@keyframes drip{0%{transform:translateY(-2px); opacity:0}20%{opacity:1}100%{transform:translateY(9px); opacity:0}}
+
+/* ---------- 狀態 ---------- */
+.animal[data-state="selected"] .lift{transform:translateY(-12%) scale(1.07)}
+.animal[data-state="selected"] .bob{animation:hopReady .7s ease-in-out infinite}
+.animal[data-state="scared"] .bob{animation:shiver .18s linear infinite}
+.animal[data-state="celebrate"] .bob{animation:cheer .5s cubic-bezier(.3,0,.5,1) infinite alternate}
+@keyframes hopReady{0%,100%{transform:translateY(0)}50%{transform:translateY(-5%)}}
+@keyframes shiver{0%,100%{transform:translateX(0)}25%{transform:translateX(-2.5%) rotate(-2deg)}75%{transform:translateX(2.5%) rotate(2deg)}}
+@keyframes cheer{from{transform:translateY(0) scale(1.07,.93)}to{transform:translateY(-24%) scale(.96,1.05)}}
+
+/* ---------- 減少動態效果 ---------- */
+:root[data-motion="reduced"] .animal *{animation:none !important}
+:root[data-motion="reduced"] .animal .lift{transition:none}
