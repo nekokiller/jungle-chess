@@ -3,6 +3,7 @@
 > 建立日期：2026-10-18
 > 規則依據：[docs/evaluation/01-game-rules.md](../evaluation/01-game-rules.md)（採用參考網站的 `doushouqi-xqv1` 規則）
 > 動畫原型：[prototype/animal-prototype.html](prototype/animal-prototype.html)（用瀏覽器直接開啟；已試玩確認畫風與動畫）
+> 音效提案：[audio-plan.md](audio-plan.md)（聲音風格、事件配置、技術接合與驗收）
 
 ## 1. 已定案的決策
 
