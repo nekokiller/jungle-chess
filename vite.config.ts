@@ -29,12 +29,22 @@ export default defineConfig({
         ],
       },
       workbox: {
-        // 遊戲音效與動物叫聲只快取網頁版 MP3；WAV 母檔、尚未接入的 BGM 與音效試聽頁不放進離線快取。
+        // 遊戲音效與動物叫聲只預先快取網頁版 MP3；WAV 母檔與音效試聽頁不放進離線快取。BGM 見下方。
         globPatterns: ['**/*.{js,css,html,svg,png,ico,webmanifest}', 'audio/{sfx,animals}/*.mp3'],
         globIgnores: ['**/node_modules/**', 'audio-preview/**'],
         cleanupOutdatedCaches: true,
         // 字型來自 Google Fonts：第一次連網時存起來，之後離線也有圓體字。
         runtimeCaching: [
+          // 背景音樂約 1 MB：不預先下載，第一次播放時存起來，之後離線也有音樂（檔名帶版本，換版會換網址）。
+          {
+            urlPattern: ({ url }) => url.pathname.includes('/audio/bgm/') && url.pathname.endsWith('.mp3'),
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'bgm',
+              expiration: { maxEntries: 4 },
+              cacheableResponse: { statuses: [200] },
+            },
+          },
           {
             urlPattern: ({ url }) => url.origin === 'https://fonts.googleapis.com',
             handler: 'StaleWhileRevalidate',

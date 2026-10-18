@@ -295,6 +295,7 @@ export const useGame = create<GameStore>()((set, get) => {
       const first = firstSide(get().settings);
       reset(createGame(undefined, first), []);
       audio.play('game.start');
+      audio.startMusic();
       set({ setupOpen: false, started: true });
       say(prompt(first));
       void aiTurn();
