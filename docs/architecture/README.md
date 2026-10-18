@@ -55,6 +55,7 @@ src/
     moves.ts         合法走法、跳河、吃子判定
     game.ts          走一步、勝負判定、局面雜湊
     events.ts        事件型別
+    index.ts         對外匯出
   ai/
     search.ts        Alpha-Beta 搜尋、評估函式
     levels.ts        六檔難度參數
@@ -114,8 +115,25 @@ type GameEvent =
 | `jumpBlocked` | 跳河路徑有鼠 | 河裡有老鼠擋住，獅子跳不過去！ |
 | `rankTooLow` | 等級不夠 | 貓咪比獅子小，吃不掉牠！ |
 | `elephantVsRat` | 象想吃鼠 | 大象怕老鼠，不敢吃牠！ |
+| `noPiece` | 起點沒有動物 | 先點一隻動物喔！ |
+| `offBoard` | 目標在棋盤外 | （畫面不會發生） |
+| `notYourTurn` | 動了對方的動物 | 現在輪到另一邊喔！ |
+| `gameOver` | 對局已經結束 | （畫面不會發生） |
 
-### 5.4 測試
+### 5.4 對外介面
+
+| 函式 | 用途 |
+|---|---|
+| `createGame(board?, turn?)` | 開新局，預設初始盤面、紅方先走 |
+| `play(state, from, to)` | 輪到的一方走一步；成功回傳新的 `state`、`move`、`events`，失敗回傳原因。`state` 不可變，悔棋只要保留舊的 `state` |
+| `checkMove(board, from, to)` | 只檢查一步合不合法（不管輪到誰），點錯格子時拿原因 |
+| `movesFrom(board, from)` | 一隻動物的所有合法走法，畫腳印用 |
+| `legalMoves(board, side)` | 一方的所有合法走法，AI 用 |
+| `positionKey(board, turn)`、`repetitionCount(state)` | 重複局面判斷 |
+
+勝負判定順序：進入敵方獸穴 → 吃光對方 → 對方無合法走法 → 第三次重複局面。
+
+### 5.5 測試
 
 [01-game-rules.md](../evaluation/01-game-rules.md) 第 7 節的 15 項檢查清單，每一項都要有對應的單元測試。另外補上初始盤面座標、三次重複判和、無合法走法判負的測試。
 
@@ -194,7 +212,7 @@ type GameEvent =
 
 | 階段 | 內容 | 完成條件 |
 |---|---|---|
-| M1 規則引擎 | 專案骨架、`engine/`、完整單元測試 | 檢查清單 15 項全部通過 |
+| M1 規則引擎 ✅ | 專案骨架、`engine/`、完整單元測試 | 檢查清單 15 項全部通過 |
 | M2 棋盤與動物 | 棋盤 UI、八隻動物 SVG、表情與事件動畫、提示文字 | 可以兩邊手動走完一盤 |
 | M3 AI | Web Worker、六檔難度、AI 回合流程、悔棋 | 六檔都能正常下完一盤，入門檔小朋友贏得到 |
 | M4 完成第一版 | 開局設定（難度、紅藍、先後手）、PWA 離線、手機版面調整 | 平板上加到主畫面、離線可玩 |
