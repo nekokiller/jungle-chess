@@ -3,7 +3,7 @@ import { animate } from 'motion';
 import { pieceAt, type GameEvent, type GameState, type Move, type Piece, type Pos } from '../engine';
 import type { Face } from '../components/Animal/Animal';
 import { burst, popText } from '../components/Effects/effects';
-import { cellCenter, cellSize, pieceEl } from './registry';
+import { cellCenter, cellSize, pieceEl, toView } from './registry';
 import { T, prefs } from './timings';
 
 /** 被吃掉、但還在播被吃動畫的動物。 */
@@ -36,10 +36,12 @@ function travel(id: string, move: Move): Promise<void> {
   const jump = move.kind === 'jump';
   const duration = (jump ? T.jump : T.step) / 1000;
   const cs = cellSize();
-  const dx = (move.from.col - move.to.col) * cs;
-  const dy = (move.from.row - move.to.row) * cs;
+  const from = toView(move.from);
+  const to = toView(move.to);
+  const dx = (from.col - to.col) * cs;
+  const dy = (from.row - to.row) * cs;
   const arc = cs * (jump ? 1.05 : 0.3);
-  const tilt = Math.sign(move.to.col - move.from.col);
+  const tilt = Math.sign(to.col - from.col);
 
   el.style.zIndex = '10';
   const body = part(el, '.travel')!;

@@ -16,21 +16,36 @@ export const TERRAIN = { grass: '草地', water: '河流', trap: '陷阱', den: 
 export const ui = {
   title: '動物棋',
   turnLabel: '輪到',
-  newGame: '重新開始',
+  newGame: '新的一局',
   undo: '悔棋',
+  setupTitle: '要怎麼玩？',
   opponent: '對手',
   vsAi: '電腦',
   vsHuman: '兩個人輪流',
   level: '難度',
+  yourSide: '你要當',
+  whoFirst: '誰先走',
+  youFirst: '你先',
+  aiFirst: '電腦先',
+  start: '開始！',
+  backToBoard: '回到棋盤',
   you: '你',
   computer: '電腦',
   playAgain: '再玩一次',
+  changeSetup: '換設定',
   reduceMotion: '減少動態效果',
   draw: '平手',
   legendWater: '河流（只有老鼠能下水）',
   legendTrap: '陷阱（掉進對方的陷阱會變最弱）',
   legendDen: '獸穴（走進對方的獸穴就贏了）',
 };
+
+export const welcome = '嗨！選好要怎麼玩，就可以開始囉！';
+
+/** 棋盤下方的這一局設定摘要，例如「電腦・入門・你是紅方」。 */
+export function setupSummary(mode: 'ai' | 'pvp', levelName: string, humanSide: Side): string {
+  return mode === 'ai' ? `${ui.vsAi}・${levelName}・你是${SIDE[humanSide]}` : ui.vsHuman;
+}
 
 const color = (side: Side) => (side === 'red' ? '紅色' : '藍色');
 export const turnPrompt = (side: Side) => `輪到${SIDE[side]}囉！點一隻${color(side)}外框的動物吧。`;
