@@ -5,7 +5,7 @@ import { animalArt } from './art';
 import './animal.css';
 
 export type Face = 'normal' | 'happy' | 'scared' | 'hurt';
-export type AnimalState = 'idle' | 'selected' | 'scared' | 'celebrate';
+export type AnimalState = 'idle' | 'selected' | 'scared' | 'celebrate' | 'thinking';
 
 interface Props {
   type: AnimalType;

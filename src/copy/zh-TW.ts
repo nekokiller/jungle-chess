@@ -17,6 +17,13 @@ export const ui = {
   title: '動物棋',
   turnLabel: '輪到',
   newGame: '重新開始',
+  undo: '悔棋',
+  opponent: '對手',
+  vsAi: '電腦',
+  vsHuman: '兩個人輪流',
+  level: '難度',
+  you: '你',
+  computer: '電腦',
   playAgain: '再玩一次',
   reduceMotion: '減少動態效果',
   draw: '平手',
@@ -25,7 +32,12 @@ export const ui = {
   legendDen: '獸穴（走進對方的獸穴就贏了）',
 };
 
-export const turnPrompt = (side: Side) => `輪到${SIDE[side]}囉！點一隻${side === 'red' ? '紅色' : '藍色'}外框的動物吧。`;
+const color = (side: Side) => (side === 'red' ? '紅色' : '藍色');
+export const turnPrompt = (side: Side) => `輪到${SIDE[side]}囉！點一隻${color(side)}外框的動物吧。`;
+export const yourTurnPrompt = (side: Side) => `輪到你囉！點一隻${color(side)}外框的動物吧。`;
+export const aiThinking = '電腦想一想…';
+export const waitForAi = '等一下，電腦還在想喔！';
+export const undone = '悔棋了！再想想看要怎麼走。';
 export const pickFirst = '先點一隻動物喔！';
 export const notYourTurn = (turn: Side) => `現在輪到${SIDE[turn]}喔！`;
 
@@ -105,8 +117,8 @@ export function reasonLine(reason: PlayError, ctx: ReasonContext): string {
   }
 }
 
-/** 走完一步的說明；next 是接下來輪到的一方。 */
-export function moveLine(mover: Piece, victim: Piece | null, events: readonly GameEvent[], next: Side): string {
+/** 走完一步的說明；next 是接下來輪到誰（例如「藍方」「你」「電腦」）。 */
+export function moveLine(mover: Piece, victim: Piece | null, events: readonly GameEvent[], next: string): string {
   const me = FULL[mover.type];
   const has = (kind: GameEvent['kind']) => events.some(e => e.kind === kind);
   let line = '嘿咻！';
@@ -116,22 +128,23 @@ export function moveLine(mover: Piece, victim: Piece | null, events: readonly Ga
   else if (has('enterWater')) line = '撲通！老鼠下水游泳囉！';
   else if (has('leaveWater')) line = '老鼠上岸了！';
   else if (has('leaveTrap')) line = `${me}逃出陷阱了，等級恢復！`;
-  return `${line}換${SIDE[next]}。`;
+  return `${line}換${next}${next === '你' ? '了！' : '。'}`;
 }
 
-/** 對局結束的標題；mover 是走最後一步的動物。 */
-export function resultLine(result: GameResult, mover: Piece): string {
+/**
+ * 對局結束的標題；mover 是走最後一步的動物。
+ * you：和電腦下時玩家是哪一方，結尾改成「你贏了」「電腦贏了」。
+ */
+export function resultLine(result: GameResult, mover: Piece, you?: Side): string {
   const { winner } = result;
   if (!winner) return '同樣的情形出現了三次，這盤平手！';
   const loser: Side = winner === 'red' ? 'blue' : 'red';
-  switch (result.reason) {
-    case 'den':
-      return `${FULL[mover.type]}衝進${SIDE[loser]}的獸穴，${SIDE[winner]}獲勝！`;
-    case 'allCaptured':
-      return `${SIDE[winner]}把對方的動物都吃光了，${SIDE[winner]}獲勝！`;
-    case 'noMoves':
-      return `${SIDE[loser]}沒有路可以走了，${SIDE[winner]}獲勝！`;
-    default:
-      return `${SIDE[winner]}獲勝！`;
-  }
+  const how =
+    result.reason === 'den'
+      ? `${FULL[mover.type]}衝進${SIDE[loser]}的獸穴`
+      : result.reason === 'allCaptured'
+        ? `${SIDE[winner]}把對方的動物都吃光了`
+        : `${SIDE[loser]}沒有路可以走了`;
+  if (!you) return `${how}，${SIDE[winner]}獲勝！`;
+  return winner === you ? `${how}，你贏了！好厲害！` : `${how}，電腦贏了，再試一次吧！`;
 }
