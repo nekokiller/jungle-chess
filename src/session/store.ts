@@ -23,6 +23,10 @@ import { T, prefs } from '../animation/timings';
 import { view } from '../animation/registry';
 import { requestMove } from '../ai/client';
 import { confetti } from '../components/Effects/effects';
+import { audio } from '../audio/manager';
+import { resultCue } from '../audio/cues';
+import { callOf } from '../audio/manifest';
+import { loadAudioSettings, saveAudioSettings, type AudioSettings } from '../audio/settings';
 import type { Face } from '../components/Animal/Animal';
 import {
   SIDE,
@@ -80,6 +84,8 @@ interface GameStore {
   /** 對局結束的說明；顯示結果卡片時才有值。 */
   resultText: string | null;
   reduceMotion: boolean;
+  /** 聲音偏好。 */
+  audio: AudioSettings;
 
   clickCell(pos: Pos): void;
   /** 用新的設定開一局。 */
@@ -90,6 +96,7 @@ interface GameStore {
   closeSetup(): void;
   undo(): void;
   setReduceMotion(on: boolean): void;
+  setAudio(patch: Partial<AudioSettings>): void;
 }
 
 /** 有沒有可以退回去的一步：和電腦下時，要退得回輪到玩家的局面。 */
@@ -150,6 +157,7 @@ export const useGame = create<GameStore>()((set, get) => {
   function finish(result: GameResult, mover: Piece) {
     const text = resultLine(result, mover, vsAi() ? humanSide() : undefined);
     say(text);
+    audio.play(resultCue(result, vsAi() ? humanSide() : undefined));
     if (result.winner && (!vsAi() || result.winner === humanSide())) confetti(46);
     const game = get().game;
     setTimeout(() => {
@@ -194,6 +202,7 @@ export const useGame = create<GameStore>()((set, get) => {
 
   function reset(game: GameState, history: GameState[]) {
     aiToken++;
+    audio.cancel();
     set({ game, history, selected: null, busy: false, thinking: false, ghosts: [], faces: {}, dry: null, resultText: null });
   }
 
@@ -206,6 +215,8 @@ export const useGame = create<GameStore>()((set, get) => {
   const initialReduced = loadReduceMotion() ?? systemReducedMotion();
   applyMotion(initialReduced);
   view.flipped = isFlipped(initialSettings);
+  const initialAudio = loadAudioSettings();
+  audio.configure(initialAudio);
 
   return {
     // 一打開先顯示開局設定，盤面先擺好當背景。
@@ -225,21 +236,29 @@ export const useGame = create<GameStore>()((set, get) => {
     dry: null,
     resultText: null,
     reduceMotion: initialReduced,
+    audio: initialAudio,
 
     clickCell(pos) {
       const { game, selected, busy, thinking, setupOpen } = get();
       if (setupOpen || busy || game.result || !inBounds(pos)) return;
-      if (thinking || isAiTurn()) return say(waitForAi);
+      if (thinking || isAiTurn()) {
+        audio.play('move.invalid');
+        return say(waitForAi);
+      }
       const piece = pieceAt(game.board, pos);
 
-      // 再點一次自己：取消選取。
+      // 再點一次自己：取消選取（不發聲）。
       if (selected && samePos(pos, selected)) {
+        audio.stopCalls();
         set({ selected: null });
         say(prompt(game.turn));
         return;
       }
       // 點輪到的一方的動物：選取（或換一隻）。
       if (piece && piece.side === game.turn) {
+        // 叫聲取代選取聲；叫聲關掉或冷卻中就播普通的選取聲。
+        audio.stopCalls();
+        if (!audio.play(callOf(piece.type))) audio.play('piece.select');
         set({ selected: pos });
         say(selectLine(piece.type, selectContext(game, pos, piece)));
         return;
@@ -248,6 +267,7 @@ export const useGame = create<GameStore>()((set, get) => {
         if (!piece) say(pickFirst);
         else {
           say(notYourTurn(game.turn));
+          audio.play('move.invalid');
           void headshake(piece.id);
         }
         return;
@@ -257,6 +277,7 @@ export const useGame = create<GameStore>()((set, get) => {
       if (!result.ok) {
         const mover = pieceAt(game.board, selected)!;
         say(reasonLine(result.reason, { mover, target: piece, moverInWater: isWater(selected), turn: game.turn }));
+        audio.play('move.invalid');
         void headshake(mover.id);
         return;
       }
@@ -273,6 +294,7 @@ export const useGame = create<GameStore>()((set, get) => {
     newGame() {
       const first = firstSide(get().settings);
       reset(createGame(undefined, first), []);
+      audio.play('game.start');
       set({ setupOpen: false, started: true });
       say(prompt(first));
       void aiTurn();
@@ -282,11 +304,13 @@ export const useGame = create<GameStore>()((set, get) => {
       if (get().busy) return;
       // 打開設定時先停下電腦，關掉後再繼續。
       aiToken++;
+      audio.play('ui.tap');
       set({ setupOpen: true, thinking: false, selected: null });
     },
 
     closeSetup() {
       if (!get().started) return;
+      audio.play('ui.tap');
       set({ setupOpen: false });
       const { game } = get();
       if (!game.result) say(isAiTurn() ? aiThinking : prompt(game.turn));
@@ -302,6 +326,7 @@ export const useGame = create<GameStore>()((set, get) => {
       if (vsAi()) while (i > 0 && history[i]!.turn !== humanSide()) i--;
       const game = history[i]!;
       reset(game, history.slice(0, i));
+      audio.play('ui.tap');
       say(undone);
       void aiTurn();
     },
@@ -310,6 +335,14 @@ export const useGame = create<GameStore>()((set, get) => {
       applyMotion(on);
       saveReduceMotion(on);
       set({ reduceMotion: on });
+      audio.play('ui.tap');
+    },
+
+    setAudio(patch) {
+      const next = { ...get().audio, ...patch };
+      audio.configure(next);
+      saveAudioSettings(next);
+      set({ audio: next });
     },
   };
 });

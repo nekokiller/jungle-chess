@@ -3,6 +3,8 @@ import { animate } from 'motion';
 import { pieceAt, type GameEvent, type GameState, type Move, type Piece, type Pos } from '../engine';
 import type { Face } from '../components/Animal/Animal';
 import { burst, popText } from '../components/Effects/effects';
+import { audio } from '../audio/manager';
+import { moveCues } from '../audio/cues';
 import { cellCenter, cellSize, pieceEl, toView } from './registry';
 import { T, prefs } from './timings';
 
@@ -75,8 +77,8 @@ function travel(id: string, move: Move): Promise<void> {
   });
 }
 
-/** 被吃掉：縮小旋轉、迸出星星與「噗！」。 */
-async function poof(id: string, at: Pos): Promise<void> {
+/** 被吃掉：縮小旋轉、迸出星星與「噗！」。onStar：星星出現的那一刻（吃子聲）。 */
+async function poof(id: string, at: Pos, onStar: () => void): Promise<void> {
   await sleep(prefs.reduced ? 60 : T.poofDelay);
   const el = pieceEl(id);
   if (!el) return;
@@ -85,6 +87,7 @@ async function poof(id: string, at: Pos): Promise<void> {
   setTimeout(() => {
     burst(c.x, c.y, 'star', 12, c.cs * 0.66);
     popText(c.x, c.y - c.cs * 0.3, '噗！');
+    onStar();
   }, duration * 0.4);
   await animate(
     part(el, '.act')!,
@@ -114,6 +117,11 @@ export async function playMove(
   const mover = pieceAt(before.board, move.from)!;
   const victim = move.captured;
   const has = (kind: GameEvent['kind']) => events.some(e => e.kind === kind);
+  // 聲音綁定這一步：播放中重新開始、關聲音或切背景，之後的節點就不再發聲。
+  const sfx = audio.scope();
+  const cues = moveCues(move, events, prefs.reduced);
+  audio.stopCalls();
+  if (cues.start) sfx(cues.start);
 
   if (has('leaveWater')) {
     const s = cellCenter(move.from, 0.1);
@@ -126,12 +134,13 @@ export async function playMove(
   const eaten = victim
     ? (async () => {
         await sleep(((move.kind === 'jump' ? T.jump : T.step) * T.captureAt) * (prefs.reduced ? 0 : 1));
-        await poof(victim.id, move.to);
+        await poof(victim.id, move.to, () => cues.capture && sfx('piece.capture'));
         stage.removeGhost(victim.id);
       })()
     : Promise.resolve();
   await Promise.all([moving, eaten]);
   if (victim && !prefs.reduced) await sleep(T.afterCapture);
+  if (cues.arrive) sfx(cues.arrive.id, { gain: cues.arrive.gain });
 
   if (has('enterWater')) {
     stage.setDry(null);

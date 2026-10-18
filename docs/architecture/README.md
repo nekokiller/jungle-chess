@@ -76,6 +76,12 @@ src/
     Effects/         星星、水花、塵土、彩帶
     Bubble/          對話框（走錯時的說明）
     Setup/           開局設定視窗
+  audio/
+    manifest.ts      音效 ID、檔案、優先順序、增益與間隔
+    mixer.ts         最短間隔、叫聲冷卻、聲道上限
+    cues.ts          每步事件要播哪些聲音、結算音
+    manager.ts       Web Audio 播放器（解鎖、解碼、音量、取消）
+    settings.ts      聲音開關、音量、動物叫聲，記在瀏覽器
   copy/
     zh-TW.ts         所有提示文字（兒童語氣）
   styles/
@@ -85,10 +91,13 @@ tests/
   copy/            提示文字測試（每個原因代碼都有說明）
   ai/              AI 基本測試
   session/         開局設定（先後手、棋盤顛倒、讀回存檔）
+  audio/           音效取捨、混音規則、聲音偏好
 scripts/
   ai.selfplay.ts   AI 自我對弈（npm run ai:selfplay，不在一般測試裡跑）
 public/
   icon.svg         App 圖示原稿；npm run icons 產生各尺寸 PNG（一併提交）
+  audio/           遊戲音效（sfx/）與動物叫聲（animals/），WAV 母檔＋MP3 網頁版
+  audio-preview/   音效試聽頁（不進離線快取）
 pwa-assets.config.ts  圖示產生設定
 ```
 
@@ -250,6 +259,7 @@ type GameEvent =
 ### 8.3 PWA
 
 - `vite-plugin-pwa`（generateSW）：預先快取所有程式、樣式、圖示與 AI 的 Worker，第一次連網打開後就能離線玩。
+- 遊戲音效的 MP3（`public/audio/`）一併預先快取；WAV 母檔與音效試聽頁（`public/audio-preview/`）不放進快取。
 - Google Fonts 的字型在第一次連網使用時存進快取（CSS 用 StaleWhileRevalidate、字型檔用 CacheFirst）；還沒存到時離線會改用系統字型。
 - 更新方式 `autoUpdate`：新版的 service worker 裝好就接手，但**不會自動重新整理**（避免小朋友下到一半畫面被重整），下次打開才換成新版。
 - `base: './'`：放在網域根目錄或子路徑都能用。**要加到主畫面、離線玩，網站必須是 HTTPS**（`localhost` 除外），用區網 IP 開發伺服器在平板上測不到離線。
@@ -271,4 +281,5 @@ type GameEvent =
 | M2 棋盤與動物 ✅ | 棋盤 UI、八隻動物 SVG、表情與事件動畫、提示文字 | 可以兩邊手動走完一盤 |
 | M3 AI ✅ | Web Worker、六檔難度、AI 回合流程、悔棋 | 六檔都能正常下完一盤，入門檔小朋友贏得到 |
 | M4 完成第一版 | 開局設定（難度、紅藍、先後手）、PWA 離線、手機版面調整 | 平板上加到主畫面、離線可玩（程式完成；待部署到 HTTPS 後實機確認） |
-| 之後 | 音效與動物叫聲、同裝置雙人、提示功能、線上雙人 | — |
+| 音效 | 15 個核心音效、8 種動物叫聲、聲音開關／音量／叫聲開關（見 [audio-plan.md](audio-plan.md) 第 9 節） | 核心情境音畫一致，音效失敗不影響對局（程式完成；待手機實機試聽） |
+| 之後 | 同裝置雙人、提示功能、線上雙人 | — |
