@@ -34,8 +34,8 @@ describe('提示文字', () => {
   });
 
   it('走完一步會說明並提示換誰', () => {
-    const line = moveLine(piece('tiger'), piece('cat', 'blue'), [], 'blue');
-    expect(line).toBe('老虎吃掉了貓咪！換藍方。');
+    expect(moveLine(piece('tiger'), piece('cat', 'blue'), [], '藍方')).toBe('老虎吃掉了貓咪！換藍方。');
+    expect(moveLine(piece('tiger', 'blue'), piece('cat'), [], '你')).toBe('老虎吃掉了貓咪！換你了！');
   });
 
   it('四種結束方式都有說明', () => {
@@ -43,5 +43,10 @@ describe('提示文字', () => {
     expect(resultLine({ winner: 'blue', reason: 'allCaptured' }, piece('lion', 'blue'))).toContain('吃光');
     expect(resultLine({ winner: 'red', reason: 'noMoves' }, piece('rat'))).toContain('藍方沒有路可以走');
     expect(resultLine({ winner: null, reason: 'repetition' }, piece('rat'))).toContain('平手');
+  });
+
+  it('和電腦下時說「你贏了」「電腦贏了」', () => {
+    expect(resultLine({ winner: 'red', reason: 'den' }, piece('rat'), 'red')).toBe('老鼠衝進藍方的獸穴，你贏了！好厲害！');
+    expect(resultLine({ winner: 'blue', reason: 'den' }, piece('rat', 'blue'), 'red')).toContain('電腦贏了');
   });
 });

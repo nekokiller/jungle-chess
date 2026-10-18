@@ -22,5 +22,9 @@
 .legend li{display:flex; align-items:center; gap:6px}
 .sw{width:14px; height:14px; border-radius:4px; display:inline-block}
 .sw.w{background:var(--water-1)} .sw.t{background:var(--trap)} .sw.d{background:var(--den)}
-.actions{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px}
+.actions{display:flex; flex-wrap:wrap; align-items:center; gap:10px}
+.settings{display:flex; flex-wrap:wrap; align-items:center; gap:10px 18px}
+.field{display:flex; align-items:center; gap:6px; font-size:14px; color:var(--muted)}
+.field select{font:inherit; font-family:var(--font-display); font-size:15px; color:var(--ink); background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:4px 8px}
+.field select:disabled{opacity:.5}
 .toggle{display:flex; align-items:center; gap:6px; font-size:14px; color:var(--muted); cursor:pointer}

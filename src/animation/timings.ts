@@ -10,6 +10,7 @@ export const T = {
   headshake: 560, //     不能走
   happyFace: 900, //     吃子後開心的表情
   winOverlay: 900, //    進入獸穴後多久顯示勝利畫面
+  aiMinThink: 500, //    AI 至少想這麼久再走
   blinkMin: 2200,
   blinkRange: 3800,
 } as const;

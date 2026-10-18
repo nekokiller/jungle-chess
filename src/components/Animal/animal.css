@@ -85,6 +85,10 @@
 .animal[data-state="selected"] .bob{animation:hopReady .7s ease-in-out infinite}
 .animal[data-state="scared"] .bob{animation:shiver .18s linear infinite}
 .animal[data-state="celebrate"] .bob{animation:cheer .5s cubic-bezier(.3,0,.5,1) infinite alternate}
+.animal[data-state="thinking"] .bob{animation:lookAround 2.4s ease-in-out infinite; animation-delay:var(--d,0s)}
+.animal[data-state="thinking"] .eyes-open{animation:glance 2.4s ease-in-out infinite; animation-delay:var(--d,0s)}
+@keyframes lookAround{0%,100%{transform:rotate(0)}20%,35%{transform:rotate(-7deg) translateX(-2%)}60%,75%{transform:rotate(7deg) translateX(2%)}}
+@keyframes glance{0%,100%{transform:translateX(0)}20%,35%{transform:translateX(-2px)}60%,75%{transform:translateX(2px)}}
 @keyframes hopReady{0%,100%{transform:translateY(0)}50%{transform:translateY(-5%)}}
 @keyframes shiver{0%,100%{transform:translateX(0)}25%{transform:translateX(-2.5%) rotate(-2deg)}75%{transform:translateX(2.5%) rotate(2deg)}}
 @keyframes cheer{from{transform:translateY(0) scale(1.07,.93)}to{transform:translateY(-24%) scale(.96,1.05)}}

@@ -87,9 +87,10 @@ const PieceView = memo(function PieceView({ piece, pos, state, face, rank, inWat
 });
 
 export function Board() {
-  const { game, selected, ghosts, faces, dry, resultText, newGame } = useGame(
+  const { game, selected, thinking, ghosts, faces, dry, resultText, newGame } = useGame(
     useShallow(s => ({
       game: s.game,
+      thinking: s.thinking,
       selected: s.selected,
       ghosts: s.ghosts,
       faces: s.faces,
@@ -108,8 +109,17 @@ export function Board() {
       if (!piece) continue;
       const pos = { row, col };
       const trapped = inEnemyTrap(pos, piece.side);
+      // AI 思考時，輪到的那一方的動物東張西望。
       const state: AnimalState =
-        winner === piece.side ? 'celebrate' : selected && samePos(selected, pos) ? 'selected' : trapped ? 'scared' : 'idle';
+        winner === piece.side
+          ? 'celebrate'
+          : selected && samePos(selected, pos)
+            ? 'selected'
+            : trapped
+              ? 'scared'
+              : thinking && piece.side === game.turn
+                ? 'thinking'
+                : 'idle';
       const face: Face =
         faces[piece.id] ?? (state === 'selected' || state === 'celebrate' ? 'happy' : state === 'scared' ? 'scared' : 'normal');
       pieces.push(
