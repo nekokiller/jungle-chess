@@ -1,0 +1,239 @@
+{
+  "schemaVersion": 1,
+  "packVersion": "animals-v1",
+  "createdDate": "2026-10-18",
+  "sampleRate": 48000,
+  "channels": 1,
+  "wavBitDepth": 16,
+  "mp3BitrateKbps": 128,
+  "provenance": "Original procedural cartoon vocal synthesis; not real animal recordings. No third-party audio samples.",
+  "encoder": "ffmpeg version 8.1.1-full_build-www.gyan.dev Copyright (c) 2000-2026 the FFmpeg developers",
+  "totalMp3Bytes": 67560,
+  "totalWavBytes": 358432,
+  "assets": [
+    {
+      "id": "animal.elephant.select",
+      "animal": "elephant",
+      "title": "大象",
+      "version": 1,
+      "previewNumber": 1,
+      "previewLabel": "A01",
+      "group": "animals",
+      "icon": "🐘",
+      "character": "圓潤短鼻鳴 · 噗嗚",
+      "description": "帶鼻音的短呼聲，保留大象的份量與親切感。",
+      "approval": "pending-listening",
+      "source": "scripts/generate_animal_audio.py:elephant",
+      "durationSeconds": 0.52,
+      "peakDbfs": -10.32,
+      "rmsDbfs": -19.58,
+      "decodedMp3PeakDbfs": -10.74,
+      "wav": {
+        "file": "elephant-call-v1.wav",
+        "bytes": 49964,
+        "sha256": "2d51db02edad9920323e22141e6271a18f61f5e6ac010d5980cc6451eebff08e"
+      },
+      "mp3": {
+        "file": "elephant-call-v1.mp3",
+        "bytes": 9261,
+        "sha256": "9978e9b66d42283a450a06e54ebe2ca35d91d29655b40b253c6101ce7372cee3"
+      }
+    },
+    {
+      "id": "animal.lion.select",
+      "animal": "lion",
+      "title": "獅子",
+      "version": 1,
+      "previewNumber": 2,
+      "previewLabel": "A02",
+      "group": "animals",
+      "icon": "🦁",
+      "character": "溫和低吼 · 嗷",
+      "description": "低沉、有胸腔感的一聲小吼，尾音柔和下降。",
+      "approval": "pending-listening",
+      "source": "scripts/generate_animal_audio.py:lion",
+      "durationSeconds": 0.56,
+      "peakDbfs": -8.0,
+      "rmsDbfs": -20.65,
+      "decodedMp3PeakDbfs": -8.43,
+      "wav": {
+        "file": "lion-call-v1.wav",
+        "bytes": 53804,
+        "sha256": "9c963240d9cce25791fa8be4536027300cce2c3e66c3c712fc640ca25d06b6a6"
+      },
+      "mp3": {
+        "file": "lion-call-v1.mp3",
+        "bytes": 10029,
+        "sha256": "d672f8eaf865a0646115d852fad8e06593ac4ddad48224f1d5572c4e47572949"
+      }
+    },
+    {
+      "id": "animal.tiger.select",
+      "animal": "tiger",
+      "title": "老虎",
+      "version": 1,
+      "previewNumber": 3,
+      "previewLabel": "A03",
+      "group": "animals",
+      "icon": "🐯",
+      "character": "彈性雙音 · 嗷嗚",
+      "description": "先張口、再收成短嗚聲，節奏與獅子區別。",
+      "approval": "pending-listening",
+      "source": "scripts/generate_animal_audio.py:tiger",
+      "durationSeconds": 0.51,
+      "peakDbfs": -8.85,
+      "rmsDbfs": -19.58,
+      "decodedMp3PeakDbfs": -9.28,
+      "wav": {
+        "file": "tiger-call-v1.wav",
+        "bytes": 49004,
+        "sha256": "ac95f4ddfb3d619f02d45c6f9bda2fabab074fd78f048a74ef983251fbe601d7"
+      },
+      "mp3": {
+        "file": "tiger-call-v1.mp3",
+        "bytes": 9261,
+        "sha256": "37ee3602d078e88d529b9eadb59685c55c5b914f5055669746a7175a07acfb57"
+      }
+    },
+    {
+      "id": "animal.leopard.select",
+      "animal": "leopard",
+      "title": "豹子",
+      "version": 1,
+      "previewNumber": 4,
+      "previewLabel": "A04",
+      "group": "animals",
+      "icon": "🐆",
+      "character": "輕巧顫音 · 嗚嚕",
+      "description": "短促、有呼嚕起伏的聲音，尾端微微上揚。",
+      "approval": "pending-listening",
+      "source": "scripts/generate_animal_audio.py:leopard",
+      "durationSeconds": 0.4,
+      "peakDbfs": -10.22,
+      "rmsDbfs": -19.58,
+      "decodedMp3PeakDbfs": -10.55,
+      "wav": {
+        "file": "leopard-call-v1.wav",
+        "bytes": 38444,
+        "sha256": "cac0dfa412a33c7f6f18edea6d101f44e58c9da9d94d40c525055e18114adfd9"
+      },
+      "mp3": {
+        "file": "leopard-call-v1.mp3",
+        "bytes": 7341,
+        "sha256": "30520e7de541d96fca79b217d2b305261bd9e8d4e7a64de13cc3d06d549805fe"
+      }
+    },
+    {
+      "id": "animal.wolf.select",
+      "animal": "wolf",
+      "title": "野狼",
+      "version": 1,
+      "previewNumber": 5,
+      "previewLabel": "A05",
+      "group": "animals",
+      "icon": "🐺",
+      "character": "柔和上揚 · 嗚～",
+      "description": "一小段圓潤呼聲，略帶顫音，不拖成長嚎。",
+      "approval": "pending-listening",
+      "source": "scripts/generate_animal_audio.py:wolf",
+      "durationSeconds": 0.6,
+      "peakDbfs": -13.7,
+      "rmsDbfs": -19.58,
+      "decodedMp3PeakDbfs": -14.14,
+      "wav": {
+        "file": "wolf-call-v1.wav",
+        "bytes": 57644,
+        "sha256": "0e5377805b742a2e3d84de7bc68fac496fd99a1ba3f94fd70c6c7a58326cce3e"
+      },
+      "mp3": {
+        "file": "wolf-call-v1.mp3",
+        "bytes": 10413,
+        "sha256": "babc9b0d25c0fbe77bbf807fd65ef65610b158bd946e44e0515258dbb7df3654"
+      }
+    },
+    {
+      "id": "animal.dog.select",
+      "animal": "dog",
+      "title": "小狗",
+      "version": 1,
+      "previewNumber": 6,
+      "previewLabel": "A06",
+      "group": "animals",
+      "icon": "🐶",
+      "character": "友善短吠 · 汪",
+      "description": "短起音加上下滑的張口聲，像開心打招呼。",
+      "approval": "pending-listening",
+      "source": "scripts/generate_animal_audio.py:dog",
+      "durationSeconds": 0.3,
+      "peakDbfs": -8.97,
+      "rmsDbfs": -19.58,
+      "decodedMp3PeakDbfs": -9.41,
+      "wav": {
+        "file": "dog-call-v1.wav",
+        "bytes": 28844,
+        "sha256": "4a10ad221a2a942d568ebac022e1f557e0dd37b0c8f3cf420b4cbdf128902f53"
+      },
+      "mp3": {
+        "file": "dog-call-v1.mp3",
+        "bytes": 5805,
+        "sha256": "7041f851d9433cd2cffb424461019ec1dbf69939d1c511665521ff745df6c40c"
+      }
+    },
+    {
+      "id": "animal.cat.select",
+      "animal": "cat",
+      "title": "小貓",
+      "version": 1,
+      "previewNumber": 7,
+      "previewLabel": "A07",
+      "group": "animals",
+      "icon": "🐱",
+      "character": "輕柔轉音 · 喵",
+      "description": "從細細鼻音轉成張口再收尾，帶出喵的弧線。",
+      "approval": "pending-listening",
+      "source": "scripts/generate_animal_audio.py:cat",
+      "durationSeconds": 0.52,
+      "peakDbfs": -12.15,
+      "rmsDbfs": -19.58,
+      "decodedMp3PeakDbfs": -12.58,
+      "wav": {
+        "file": "cat-call-v1.wav",
+        "bytes": 49964,
+        "sha256": "1b9cd82bfc7be0663c2f2f15e51788db7d3725afa1e1742f678d8fe7f00ecd80"
+      },
+      "mp3": {
+        "file": "cat-call-v1.mp3",
+        "bytes": 9261,
+        "sha256": "1f04a9855f6042f7f6007a2fd43a4b3dbf3d012c9fd88e93a57411653d15c4c9"
+      }
+    },
+    {
+      "id": "animal.rat.select",
+      "animal": "rat",
+      "title": "老鼠",
+      "version": 1,
+      "previewNumber": 8,
+      "previewLabel": "A08",
+      "group": "animals",
+      "icon": "🐭",
+      "character": "圓潤雙啾 · 吱啾",
+      "description": "兩個小啾聲，控制高頻與音量，避免刺耳。",
+      "approval": "pending-listening",
+      "source": "scripts/generate_animal_audio.py:rat",
+      "durationSeconds": 0.32,
+      "peakDbfs": -10.7,
+      "rmsDbfs": -19.58,
+      "decodedMp3PeakDbfs": -11.13,
+      "wav": {
+        "file": "rat-call-v1.wav",
+        "bytes": 30764,
+        "sha256": "0e08b4c49a9e2705fe003520c7691e872fd54fd5dc8c5130c925cfb57bbdd98c"
+      },
+      "mp3": {
+        "file": "rat-call-v1.mp3",
+        "bytes": 6189,
+        "sha256": "fadee1465874f9d70e0ce333a9c66ce71a956fb015eb4494c050dc9be4edd446"
+      }
+    }
+  ]
+}

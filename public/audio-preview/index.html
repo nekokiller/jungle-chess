@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#244d3d">
+  <title>玩具森林 · 動物叫聲與核心音效</title>
+  <style>
+    :root { color-scheme: light; font-family: system-ui, "Microsoft JhengHei", sans-serif; color: #243e33; background: #f6f3e9; }
+    * { box-sizing: border-box; }
+    body { margin: 0; }
+    main { max-width: 1000px; margin: auto; padding: 48px 24px 32px; }
+    .eyebrow { font-size: 12px; letter-spacing: .18em; font-weight: 800; color: #637b56; }
+    h1 { font-size: clamp(32px, 6vw, 52px); letter-spacing: -.04em; margin: 12px 0; }
+    .intro { max-width: 640px; color: #637064; line-height: 1.8; margin-bottom: 28px; }
+    .controls { display: flex; align-items: center; flex-wrap: wrap; gap: 14px; padding: 18px; background: #e7ebdf; border-radius: 18px; }
+    button { font: inherit; font-weight: 700; cursor: pointer; border: 0; border-radius: 11px; padding: 12px 18px; background: #244d3d; color: white; }
+    button:hover { background: #34664f; }
+    button.secondary { background: #fffdf7; color: #244d3d; }
+    button:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid #bd7a2c; outline-offset: 4px; }
+    .volume { display: flex; align-items: center; gap: 9px; margin-left: auto; }
+    input { accent-color: #244d3d; width: 125px; }
+    output { min-width: 3em; font-variant-numeric: tabular-nums; }
+    #status { min-height: 26px; margin: 15px 4px 22px; color: #60705d; font-size: 14px; }
+    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .section-title { margin: 30px 0 16px; font-size: 22px; }
+    article { display: flex; flex-direction: column; border: 1px solid #e0e3d6; border-radius: 20px; padding: 24px; background: #fffef9; transition: border-color .15s, box-shadow .15s; }
+    article.playing { border-color: #3b825e; box-shadow: 0 0 0 3px #3b825e22; }
+    .top { display: flex; justify-content: space-between; align-items: center; }
+    .icon { font-size: 32px; display: block; }
+    .number { color: #76836e; font-size: 12px; font-weight: 700; letter-spacing: .1em; }
+    h2 { margin: 20px 0 6px; font-size: 21px; }
+    .sound { color: #9a6b30; font-size: 14px; font-weight: 600; margin: 0; }
+    .approval { font-size: 12px; color: #63785b; margin: 10px 0 0; }
+    .description { color: #697368; line-height: 1.7; font-size: 14px; min-height: 48px; margin: 14px 0 22px; }
+    .actions { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: auto; }
+    .actions button { font-size: 14px; padding: 10px 16px; }
+    a { color: #63785b; font-size: 12px; text-underline-offset: 3px; }
+    .note { background: #ede8d8; border-color: transparent; justify-content: center; }
+    .note h2 { margin-top: 0; font-size: 18px; }
+    .note p { color: #68705f; font-size: 14px; line-height: 1.9; margin: 8px 0 0; }
+    footer { margin-top: 24px; color: #7b8173; font-size: 12px; line-height: 1.8; }
+    @media (max-width: 760px) { .grid { grid-template-columns: repeat(2, 1fr); } main { padding-top: 28px; } }
+    @media (max-width: 480px) { .grid { grid-template-columns: 1fr; } .volume { margin-left: 0; width: 100%; } input { flex: 1; } }
+    @media (prefers-reduced-motion: reduce) { article { transition: none; } }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="eyebrow">JUNGLE CHESS / ANIMAL VOICES V1</div>
+    <h1>聽見玩具森林</h1>
+    <p class="intro">八位森林朋友，現在都有自己的聲音。先聽聽新製作的卡通叫聲，也可以重播已通過試聽的 15 個核心音效。</p>
+  </header>
+  <section class="controls" aria-label="播放控制">
+    <button id="play-animals" type="button">▶ 8 種動物叫聲</button>
+    <button id="play-core" class="secondary" type="button">▶ 15 個核心音效</button>
+    <button id="play-all" class="secondary" type="button">▶ 全部 23 個</button>
+    <button id="stop" class="secondary" type="button">■ 停止</button>
+    <label class="volume" for="volume">音量 <input id="volume" type="range" min="0" max="100" value="50"><output id="volume-value" for="volume">50%</output></label>
+  </section>
+  <p id="status" role="status" aria-live="polite">點選播放開始試聽，每次只播放一個音效。</p>
+  <h2 class="section-title">新朋友的聲音 · 8 種動物</h2>
+  <section id="animal-grid" class="grid" aria-label="8 種動物叫聲"></section>
+  <h2 class="section-title">棋盤上的小聲音 · 15 個核心音效</h2>
+  <section id="sound-grid" class="grid" aria-label="15 個核心音效"></section>
+  <noscript>請開啟 JavaScript 使用試聽控制，或直接從 ../audio/animals/ 與 ../audio/sfx/ 取得音檔。</noscript>
+  <footer>動物叫聲為合成卡通角色聲，非真實動物錄音 · 尚未接入遊戲<br>A01–A08 新製作待試聽；核心音效 01–15 已通過。試聽 MP3 128 kbps / 母檔 WAV 48 kHz。<br>建議先用目前的 50% 音量，再依手機喇叭或耳機調整。</footer>
+</main>
+<script src="catalog.js"></script>
+<script src="animals-catalog.js"></script>
+<script>
+  const coreCatalog = window.audioCatalog || [];
+  const animalCatalog = window.animalCatalog || [];
+  const catalog = [...animalCatalog, ...coreCatalog];
+  const assetRoot = asset => asset.group === 'animals' ? '../audio/animals/' : '../audio/sfx/';
+  function element(tag, className, text) {
+    const node = document.createElement(tag);
+    node.className = className;
+    if (text !== undefined) node.textContent = text;
+    return node;
+  }
+  for (const asset of catalog) {
+    const card = element('article', '');
+    card.dataset.id = asset.id;
+    const top = element('div', 'top');
+    const icon = element('span', 'icon', asset.icon);
+    icon.setAttribute('aria-hidden', 'true');
+    top.append(icon, element('span', 'number', `${asset.previewLabel || String(asset.previewNumber).padStart(2, '0')} / ${asset.durationSeconds.toFixed(2)} 秒`));
+    const actions = element('div', 'actions');
+    const button = element('button', '', '▶ 播放');
+    button.type = 'button';
+    button.dataset.play = asset.id;
+    button.setAttribute('aria-label', `播放${asset.title}`);
+    actions.append(button);
+    for (const format of ['mp3', 'wav']) {
+      const link = element('a', '', format.toUpperCase());
+      link.href = assetRoot(asset) + asset[format].file;
+      link.download = asset[format].file;
+      link.setAttribute('aria-label', `下載${asset.title} ${format.toUpperCase()}`);
+      actions.append(link);
+    }
+    card.append(top, element('h2', '', asset.title), element('p', 'sound', asset.character),
+      element('p', 'approval', asset.approval === 'user-approved' ? '✓ 已試聽通過' : '＋ 新製作，待試聽'),
+      element('p', 'description', asset.description), actions);
+    document.querySelector(asset.group === 'animals' ? '#animal-grid' : '#sound-grid').append(card);
+  }
+  const cards = [...document.querySelectorAll('[data-id]')];
+  const status = document.querySelector('#status');
+  const volume = document.querySelector('#volume');
+  const player = new Audio();
+  player.volume = .5;
+  let generation = 0;
+  let current = null;
+  let queue = [];
+  let gapTimer;
+  const names = Object.fromEntries(cards.map(card => [card.dataset.id, card.querySelector('h2').textContent]));
+  const audioFiles = Object.fromEntries(catalog.map(asset => [asset.id, assetRoot(asset) + asset.mp3.file]));
+  document.querySelector('#play-animals').disabled = !animalCatalog.length;
+  document.querySelector('#play-core').disabled = !coreCatalog.length;
+  document.querySelector('#play-all').disabled = !catalog.length;
+  if (animalCatalog.length !== 8 || coreCatalog.length !== 15) {
+    status.textContent = '部分音效清單載入失敗，請重新整理頁面。';
+  }
+
+  function clearHighlight() {
+    cards.forEach(card => {
+      card.classList.remove('playing');
+      card.querySelector('button').textContent = '▶ 播放';
+    });
+  }
+  function stop() {
+    generation++;
+    clearTimeout(gapTimer);
+    queue = [];
+    current = null;
+    player.onended = null;
+    player.onerror = null;
+    player.pause();
+    player.removeAttribute('src');
+    player.load();
+    clearHighlight();
+  }
+  function failed(token) {
+    if (token !== generation) return;
+    stop();
+    status.textContent = '播放未成功，請再點一次播放，或下載 WAV 試聽。';
+  }
+  async function play(id, token) {
+    if (token !== generation) return;
+    clearHighlight();
+    current = id;
+    const card = cards.find(item => item.dataset.id === id);
+    card.classList.add('playing');
+    card.querySelector('button').textContent = '↻ 重播';
+    status.textContent = `正在播放：${names[id]}`;
+    player.src = audioFiles[id];
+    player.onerror = () => failed(token);
+    player.onended = () => {
+      if (token !== generation) return;
+      clearHighlight();
+      current = null;
+      if (queue.length) {
+        status.textContent = '稍停一下，接著播放下一個音效…';
+        gapTimer = setTimeout(() => play(queue.shift(), token), 700);
+      } else status.textContent = '試聽完成。可以再聽一次，或挑一個聲音調整。';
+    };
+    try { await player.play(); } catch { failed(token); }
+  }
+  document.querySelectorAll('[data-play]').forEach(button => button.addEventListener('click', () => {
+    stop();
+    void play(button.dataset.play, generation);
+  }));
+  document.querySelector('#play-all').addEventListener('click', () => {
+    stop();
+    queue = cards.map(card => card.dataset.id);
+    void play(queue.shift(), generation);
+  });
+  document.querySelector('#play-animals').addEventListener('click', () => {
+    stop();
+    queue = animalCatalog.map(asset => asset.id);
+    if (queue.length) void play(queue.shift(), generation);
+  });
+  document.querySelector('#play-core').addEventListener('click', () => {
+    stop();
+    queue = coreCatalog.map(asset => asset.id);
+    if (queue.length) void play(queue.shift(), generation);
+  });
+  document.querySelector('#stop').addEventListener('click', () => {
+    stop();
+    status.textContent = '已停止播放。';
+  });
+  volume.addEventListener('input', () => {
+    player.volume = Number(volume.value) / 100;
+    document.querySelector('#volume-value').value = `${volume.value}%`;
+  });
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden && (current || queue.length)) {
+      stop();
+      status.textContent = '已暫停，點選播放即可重新試聽。';
+    }
+  });
+</script>
+</body>
+</html>
