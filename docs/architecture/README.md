@@ -286,6 +286,23 @@ type GameEvent =
 - **給小朋友用：** 用 Chrome 或 Edge 打開網址 → 網址列右側的「安裝應用程式」（平板、手機是「加到主畫面」），桌面就會出現「動物棋」圖示。從圖示打開是獨立視窗，沒有網址列與分頁。
 - **本機自我檢查（2026-10-18）：** 用 `vite preview --base /jungle-chess/` 模擬子路徑。結果：Service Worker 範圍是 `/jungle-chess/`；預先快取 45 項都在且沒有缺檔；WAV 與試聽頁已排除；可以開局，音效與音樂正常載入；第二次打開時音樂已存進 `bgm` 快取。
 
+### 8.6 搜尋引擎
+
+- `index.html` 的標頭：
+  - 標題與說明都寫進「動物棋（鬥獸棋）」
+  - Google Search Console 的擁有權驗證（`google-site-verification`）
+  - 標準網址（`canonical`）
+  - 分享預覽（Open Graph，圖片是 `public/og-image.jpg`，1200×630）
+  - 結構化資料（schema.org `WebApplication`，別名鬥獸棋、免費）
+  - 網址都寫死成 GitHub Pages 的正式位置
+- `public/sitemap.xml`：只有首頁一個網址；網頁有大改時更新 `lastmod`。
+- Search Console 的資源類型是「網址前置字元」`https://nekokiller.github.io/jungle-chess/`。github.io 不是自己的網域，不能用「網域」驗證。`nekokiller.github.io` 根目錄沒有 robots.txt，代表全站允許抓取。
+- 發佈後的步驟：
+  1. 在 Search Console 按「驗證」
+  2. 提交 `sitemap.xml`
+  3. 在「網址審查」要求建立索引
+- 注意：驗證標記要一直保留，拿掉後 Search Console 會失去擁有權。
+
 ## 9. 開發階段
 
 | 階段 | 內容 | 完成條件 |
