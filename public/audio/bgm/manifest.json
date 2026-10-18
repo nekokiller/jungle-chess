@@ -1,0 +1,38 @@
+{
+  "id": "bgm.forestLittleSteps",
+  "title": "林間小棋步",
+  "version": 1,
+  "createdDate": "2026-10-18",
+  "approval": "user-approved",
+  "description": "Original quiet toy-forest loop: wooden mallet melody, soft plucks, bass, sparse brush and rounded chords.",
+  "bpm": 80,
+  "meter": "4/4",
+  "key": "C major",
+  "bars": 16,
+  "durationSeconds": 48.0,
+  "sampleRate": 48000,
+  "channels": 2,
+  "wavBitDepth": 16,
+  "loopStartFrame": 0,
+  "loopEndFrameExclusive": 2304000,
+  "loopMethod": "Periodic tail wrapping; no whole-track fade; loop the decoded WAV buffer.",
+  "peakDbfs": -9.37,
+  "rmsDbfs": -25.28,
+  "integratedLufs": -22.99,
+  "truePeakDbtp": -9.37,
+  "loudnessRangeLu": 1.2,
+  "loopBoundaryStep": 0.0005188,
+  "provenance": "Original melody, arrangement and procedural synthesis for jungle-chess. No third-party recordings, melodies or sample libraries.",
+  "source": "scripts/generate_bgm_preview.py",
+  "wav": {
+    "file": "forest-little-steps-v1.wav",
+    "bytes": 9216044,
+    "sha256": "e504e18459a846e9560b656e6ef6beef3a51cf481e6628f215530f7c279b06bf"
+  },
+  "mp3": {
+    "file": "forest-little-steps-v1.mp3",
+    "bytes": 961005,
+    "sha256": "94970e50c08da0805671a6ad77817e1f6c08374352889632f56e0f48890f88f0"
+  },
+  "encoder": "ffmpeg version 8.1.1-full_build-www.gyan.dev Copyright (c) 2000-2026 the FFmpeg developers"
+}

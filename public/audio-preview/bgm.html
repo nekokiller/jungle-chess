@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#254f40">
+  <title>林間小棋步 · BGM 試聽</title>
+  <style>
+    :root { color-scheme: light; font-family: system-ui, "Microsoft JhengHei", sans-serif; color: #263f35; background: #f6f3e9; }
+    * { box-sizing: border-box; }
+    body { margin: 0; }
+    main { max-width: 900px; padding: 44px 24px; margin: auto; }
+    a { color: #416b50; text-underline-offset: 4px; }
+    .back { font-size: 14px; }
+    .eyebrow { font-size: 12px; letter-spacing: .16em; font-weight: 750; color: #647e58; margin-top: 38px; }
+    h1 { margin: 12px 0; font-size: clamp(36px, 7vw, 58px); letter-spacing: -.05em; }
+    .intro { line-height: 1.9; color: #677364; max-width: 650px; }
+    .player { margin-top: 28px; overflow: hidden; border: 1px solid #dfe4d4; border-radius: 26px; background: #fffef8; }
+    .art { height: 180px; position: relative; overflow: hidden; background: linear-gradient(#dfead8, #eef0d9); }
+    .sun { position: absolute; width: 70px; height: 70px; border-radius: 50%; background: #f0d18e; right: 18%; top: 25px; }
+    .hill { position: absolute; border-radius: 50% 50% 0 0; width: 75%; height: 160px; background: #b7cd9f; left: -15%; top: 75px; transform: rotate(-8deg); }
+    .hill.right { left: 40%; top: 100px; background: #86ac8b; transform: rotate(8deg); }
+    .trees { position: absolute; bottom: 7px; left: 24px; font-size: 54px; letter-spacing: 16px; filter: saturate(.65); }
+    .badge { position: absolute; top: 20px; left: 22px; background: #fffef8d9; color: #52694c; border-radius: 99px; padding: 7px 12px; font-size: 12px; }
+    .inside { padding: 28px; }
+    .meta { display: flex; flex-wrap: wrap; gap: 9px; margin-bottom: 22px; }
+    .meta span { padding: 5px 11px; border-radius: 99px; background: #eef0e5; color: #5e7158; font-size: 13px; }
+    .controls, .settings, .downloads { display: flex; align-items: center; flex-wrap: wrap; gap: 14px; }
+    button { border: 0; border-radius: 12px; padding: 13px 22px; background: #254f40; color: white; font: inherit; font-weight: 700; cursor: pointer; }
+    button:hover { background: #36664d; }
+    button.secondary { color: #254f40; background: #e9edde; }
+    button:disabled { opacity: .55; cursor: wait; }
+    button:focus-visible, input:focus-visible, a:focus-visible { outline: 3px solid #ba8134; outline-offset: 4px; }
+    .settings { margin-top: 24px; justify-content: space-between; }
+    label { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+    input { accent-color: #376b50; }
+    input[type=range] { width: 135px; }
+    output { min-width: 3em; }
+    progress { display: block; width: 100%; height: 9px; margin: 24px 0 8px; accent-color: #5f8b60; border: 0; border-radius: 9px; overflow: hidden; background: #e9eddf; }
+    progress::-webkit-progress-bar { background: #e9eddf; }
+    progress::-webkit-progress-value { background: #5f8b60; }
+    .times { display: flex; justify-content: space-between; color: #6e7a67; font-size: 12px; font-variant-numeric: tabular-nums; }
+    #status { min-height: 24px; font-size: 14px; color: #60735b; margin-top: 20px; }
+    .downloads { margin-top: 22px; font-size: 13px; }
+    .notes { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 30px; }
+    h2 { font-size: 17px; margin: 0 0 10px; }
+    .notes p { color: #687364; font-size: 14px; line-height: 1.9; margin: 0; }
+    footer { color: #808574; font-size: 12px; line-height: 1.8; margin-top: 30px; }
+    @media(max-width: 520px) { main { padding: 24px 18px; } .inside { padding: 22px; } .notes { grid-template-columns: 1fr; } .settings { align-items: flex-start; flex-direction: column; } .art { height: 145px; } }
+  </style>
+</head>
+<body>
+<main>
+  <a class="back" href="./">← 回到音效試聽</a>
+  <div class="eyebrow">JUNGLE CHESS / BGM STUDY 01</div>
+  <h1>林間小棋步</h1>
+  <p class="intro">小木琴走在前面，柔和撥弦陪在旁邊。留一點空白，讓小朋友慢慢想下一步。這是遊戲背景音樂的第一版試作。</p>
+  <section class="player" aria-label="背景音樂播放器">
+    <div class="art" aria-hidden="true"><div class="sun"></div><div class="hill"></div><div class="hill right"></div><div class="trees">🌳 🌿 🌳</div><span class="badge">TOY FOREST · ORIGINAL LOOP</span></div>
+    <div class="inside">
+      <div class="meta"><span>48 秒循環</span><span>80 BPM</span><span>木琴 · 撥弦 · 輕打擊</span></div>
+      <div class="controls"><button id="play" type="button">▶ 播放試作</button><button id="stop" class="secondary" type="button">■ 停止</button></div>
+      <div class="settings">
+        <label><input id="loop" type="checkbox" checked>循環播放</label>
+        <label for="volume">音量 <input id="volume" type="range" min="0" max="100" value="35"><output id="volume-value" for="volume">35%</output></label>
+      </div>
+      <progress id="progress" value="0" max="48" aria-label="播放進度"></progress>
+      <div class="times"><span id="elapsed">0:00</span><span>0:48</span></div>
+      <p id="status" role="status" aria-live="polite">點選播放開始試聽，預設會循環。</p>
+      <div class="downloads"><a href="../audio/bgm/forest-little-steps-v1.mp3" download>下載 MP3</a><a href="../audio/bgm/forest-little-steps-v1.wav" download>下載 WAV 母檔</a></div>
+    </div>
+  </section>
+  <section class="notes" aria-label="試聽說明">
+    <div><h2>先聽一輪，再讓它多繞幾圈</h2><p>前半段是輕巧問答，後半段稍微抬高旋律，再回到熟悉的主題。刻意留出停頓，讓它適合陪伴思考。</p></div>
+    <div><h2>這一版想確認的感覺</h2><p>是否太熱鬧、太慢，或重複久了容易分心？也可以告訴我想讓木琴更柔、節奏更少，或旋律更活潑。</p></div>
+  </section>
+  <footer>原創作曲與合成音色 · v1 已試聽通過 · 尚未接入遊戲<br>循環試聽使用 WAV 母檔，MP3 供下載。</footer>
+</main>
+<script>
+  const playButton = document.querySelector('#play');
+  const loopCheckbox = document.querySelector('#loop');
+  const volume = document.querySelector('#volume');
+  const status = document.querySelector('#status');
+  const progress = document.querySelector('#progress');
+  const elapsed = document.querySelector('#elapsed');
+  let context, gain, buffer, loading, source;
+  let generation = 0, offset = 0, startedAt = 0, playing = false;
+
+  function position() {
+    if (!playing) return offset;
+    const value = offset + context.currentTime - startedAt;
+    return source.loop ? value % buffer.duration : Math.min(value, buffer.duration);
+  }
+  function halt(reset = false) {
+    offset = reset ? 0 : position();
+    generation++;
+    playing = false;
+    if (source) {
+      const stoppedSource = source, stoppedGain = gain;
+      source.onended = () => { stoppedSource.disconnect(); stoppedGain.disconnect(); };
+      gain.gain.cancelScheduledValues(context.currentTime);
+      gain.gain.setTargetAtTime(0, context.currentTime, .008);
+      source.stop(context.currentTime + .04);
+      source = null;
+    }
+    playButton.disabled = false;
+    playButton.textContent = offset ? '▶ 繼續播放' : '▶ 播放試作';
+  }
+  async function start() {
+    const token = ++generation;
+    playButton.disabled = true;
+    status.textContent = buffer ? '準備播放…' : '正在載入音樂…';
+    try {
+      if (!context) {
+        context = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      await context.resume();
+      if (!buffer) {
+        if (!loading) loading = fetch('../audio/bgm/forest-little-steps-v1.wav')
+          .then(response => { if (!response.ok) throw new Error('Audio unavailable'); return response.arrayBuffer(); })
+          .then(bytes => context.decodeAudioData(bytes))
+          .catch(error => { loading = null; throw error; });
+        buffer = await loading;
+      }
+      if (token !== generation) return;
+      if (offset >= buffer.duration) offset = 0;
+      source = context.createBufferSource();
+      gain = context.createGain();
+      source.buffer = buffer;
+      source.loop = loopCheckbox.checked;
+      source.loopStart = 0;
+      source.loopEnd = buffer.duration;
+      gain.gain.setValueAtTime(0, context.currentTime);
+      gain.gain.linearRampToValueAtTime(Number(volume.value) / 100, context.currentTime + .04);
+      source.connect(gain).connect(context.destination);
+      const thisSource = source, thisGain = gain;
+      source.onended = () => {
+        thisSource.disconnect(); thisGain.disconnect();
+        if (token !== generation) return;
+        source = null; playing = false; offset = buffer.duration;
+        playButton.textContent = '↻ 再聽一次';
+        status.textContent = '試聽完成，可以開啟循環再聽幾輪。';
+      };
+      startedAt = context.currentTime;
+      source.start(startedAt, offset);
+      playing = true;
+      playButton.textContent = 'Ⅱ 暫停';
+      status.textContent = loopCheckbox.checked ? '正在播放「林間小棋步」· 循環開啟' : '正在播放「林間小棋步」· 單次播放';
+    } catch {
+      if (token === generation) {
+        halt();
+        status.textContent = '播放未成功，請重試或使用下方 MP3 下載連結試聽。';
+      }
+    } finally {
+      if (token === generation) playButton.disabled = false;
+    }
+  }
+  playButton.addEventListener('click', () => {
+    if (playing) { halt(); status.textContent = '已暫停。'; }
+    else void start();
+  });
+  document.querySelector('#stop').addEventListener('click', () => {
+    halt(true); status.textContent = '已停止，下一次從頭播放。';
+  });
+  loopCheckbox.addEventListener('change', () => {
+    if (playing) { halt(); void start(); }
+  });
+  volume.addEventListener('input', () => {
+    document.querySelector('#volume-value').value = `${volume.value}%`;
+    if (playing) gain.gain.setTargetAtTime(Number(volume.value) / 100, context.currentTime, .02);
+  });
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden && (playing || playButton.disabled)) {
+      halt(); status.textContent = '已暫停，回來後可繼續試聽。';
+    }
+  });
+  function drawProgress() {
+    const seconds = position();
+    progress.value = seconds;
+    elapsed.textContent = `0:${String(Math.floor(seconds)).padStart(2, '0')}`;
+    requestAnimationFrame(drawProgress);
+  }
+  drawProgress();
+</script>
+</body>
+</html>

@@ -1,0 +1,1001 @@
+{
+  "bpm": 80,
+  "bars": 16,
+  "events": [
+    {
+      "midi": 48,
+      "instrument": "pad",
+      "onsetSeconds": 0.0
+    },
+    {
+      "midi": 52,
+      "instrument": "pad",
+      "onsetSeconds": 0.0
+    },
+    {
+      "midi": 55,
+      "instrument": "pad",
+      "onsetSeconds": 0.0
+    },
+    {
+      "midi": 57,
+      "instrument": "pad",
+      "onsetSeconds": 0.0
+    },
+    {
+      "midi": 48,
+      "instrument": "bass",
+      "onsetSeconds": 0.012
+    },
+    {
+      "midi": 55,
+      "instrument": "bass",
+      "onsetSeconds": 1.875
+    },
+    {
+      "midi": 60,
+      "instrument": "pluck",
+      "onsetSeconds": 0.375
+    },
+    {
+      "midi": 67,
+      "instrument": "pluck",
+      "onsetSeconds": 0.398
+    },
+    {
+      "midi": 64,
+      "instrument": "pluck",
+      "onsetSeconds": 1.875
+    },
+    {
+      "midi": 69,
+      "instrument": "pluck",
+      "onsetSeconds": 1.898
+    },
+    {
+      "midi": 76,
+      "instrument": "wood",
+      "onsetSeconds": 0.0
+    },
+    {
+      "midi": 79,
+      "instrument": "wood",
+      "onsetSeconds": 0.5625
+    },
+    {
+      "midi": 81,
+      "instrument": "wood",
+      "onsetSeconds": 1.5
+    },
+    {
+      "midi": 79,
+      "instrument": "wood",
+      "onsetSeconds": 2.25
+    },
+    {
+      "midi": 48,
+      "instrument": "pad",
+      "onsetSeconds": 3.0
+    },
+    {
+      "midi": 52,
+      "instrument": "pad",
+      "onsetSeconds": 3.0
+    },
+    {
+      "midi": 55,
+      "instrument": "pad",
+      "onsetSeconds": 3.0
+    },
+    {
+      "midi": 57,
+      "instrument": "pad",
+      "onsetSeconds": 3.0
+    },
+    {
+      "midi": 45,
+      "instrument": "bass",
+      "onsetSeconds": 3.012
+    },
+    {
+      "midi": 52,
+      "instrument": "bass",
+      "onsetSeconds": 4.875
+    },
+    {
+      "midi": 60,
+      "instrument": "pluck",
+      "onsetSeconds": 3.375
+    },
+    {
+      "midi": 67,
+      "instrument": "pluck",
+      "onsetSeconds": 3.398
+    },
+    {
+      "midi": 64,
+      "instrument": "pluck",
+      "onsetSeconds": 4.875
+    },
+    {
+      "midi": 69,
+      "instrument": "pluck",
+      "onsetSeconds": 4.898
+    },
+    {
+      "midi": 76,
+      "instrument": "wood",
+      "onsetSeconds": 3.375
+    },
+    {
+      "midi": 72,
+      "instrument": "wood",
+      "onsetSeconds": 4.5
+    },
+    {
+      "midi": 48,
+      "instrument": "pad",
+      "onsetSeconds": 6.0
+    },
+    {
+      "midi": 52,
+      "instrument": "pad",
+      "onsetSeconds": 6.0
+    },
+    {
+      "midi": 53,
+      "instrument": "pad",
+      "onsetSeconds": 6.0
+    },
+    {
+      "midi": 57,
+      "instrument": "pad",
+      "onsetSeconds": 6.0
+    },
+    {
+      "midi": 41,
+      "instrument": "bass",
+      "onsetSeconds": 6.012
+    },
+    {
+      "midi": 48,
+      "instrument": "bass",
+      "onsetSeconds": 7.875
+    },
+    {
+      "midi": 60,
+      "instrument": "pluck",
+      "onsetSeconds": 6.375
+    },
+    {
+      "midi": 65,
+      "instrument": "pluck",
+      "onsetSeconds": 6.398
+    },
+    {
+      "midi": 64,
+      "instrument": "pluck",
+      "onsetSeconds": 7.875
+    },
+    {
+      "midi": 69,
+      "instrument": "pluck",
+      "onsetSeconds": 7.898
+    },
+    {
+      "midi": 69,
+      "instrument": "wood",
+      "onsetSeconds": 6.0
+    },
+    {
+      "midi": 72,
+      "instrument": "wood",
+      "onsetSeconds": 7.125
+    },
+    {
+      "midi": 76,
+      "instrument": "wood",
+      "onsetSeconds": 8.25
+    },
+    {
+      "midi": 47,
+      "instrument": "pad",
+      "onsetSeconds": 9.0
+    },
+    {
+      "midi": 50,
+      "instrument": "pad",
+      "onsetSeconds": 9.0
+    },
+    {
+      "midi": 55,
+      "instrument": "pad",
+      "onsetSeconds": 9.0
+    },
+    {
+      "midi": 57,
+      "instrument": "pad",
+      "onsetSeconds": 9.0
+    },
+    {
+      "midi": 43,
+      "instrument": "bass",
+      "onsetSeconds": 9.012
+    },
+    {
+      "midi": 59,
+      "instrument": "pluck",
+      "onsetSeconds": 9.375
+    },
+    {
+      "midi": 67,
+      "instrument": "pluck",
+      "onsetSeconds": 9.398
+    },
+    {
+      "midi": 62,
+      "instrument": "pluck",
+      "onsetSeconds": 10.875
+    },
+    {
+      "midi": 69,
+      "instrument": "pluck",
+      "onsetSeconds": 10.898
+    },
+    {
+      "midi": 74,
+      "instrument": "wood",
+      "onsetSeconds": 9.375
+    },
+    {
+      "midi": 79,
+      "instrument": "wood",
+      "onsetSeconds": 10.5
+    },
+    {
+      "midi": 48,
+      "instrument": "pad",
+      "onsetSeconds": 12.0
+    },
+    {
+      "midi": 52,
+      "instrument": "pad",
+      "onsetSeconds": 12.0
+    },
+    {
+      "midi": 55,
+      "instrument": "pad",
+      "onsetSeconds": 12.0
+    },
+    {
+      "midi": 59,
+      "instrument": "pad",
+      "onsetSeconds": 12.0
+    },
+    {
+      "midi": 40,
+      "instrument": "bass",
+      "onsetSeconds": 12.012
+    },
+    {
+      "midi": 47,
+      "instrument": "bass",
+      "onsetSeconds": 13.875
+    },
+    {
+      "midi": 60,
+      "instrument": "pluck",
+      "onsetSeconds": 12.375
+    },
+    {
+      "midi": 67,
+      "instrument": "pluck",
+      "onsetSeconds": 12.398
+    },
+    {
+      "midi": 64,
+      "instrument": "pluck",
+      "onsetSeconds": 13.875
+    },
+    {
+      "midi": 71,
+      "instrument": "pluck",
+      "onsetSeconds": 13.898
+    },
+    {
+      "midi": 76,
+      "instrument": "wood",
+      "onsetSeconds": 12.0
+    },
+    {
+      "midi": 79,
+      "instrument": "wood",
+      "onsetSeconds": 12.75
+    },
+    {
+      "midi": 76,
+      "instrument": "wood",
+      "onsetSeconds": 13.875
+    },
+    {
+      "midi": 48,
+      "instrument": "pad",
+      "onsetSeconds": 15.0
+    },
+    {
+      "midi": 52,
+      "instrument": "pad",
+      "onsetSeconds": 15.0
+    },
+    {
+      "midi": 55,
+      "instrument": "pad",
+      "onsetSeconds": 15.0
+    },
+    {
+      "midi": 57,
+      "instrument": "pad",
+      "onsetSeconds": 15.0
+    },
+    {
+      "midi": 45,
+      "instrument": "bass",
+      "onsetSeconds": 15.012
+    },
+    {
+      "midi": 52,
+      "instrument": "bass",
+      "onsetSeconds": 16.875
+    },
+    {
+      "midi": 60,
+      "instrument": "pluck",
+      "onsetSeconds": 15.375
+    },
+    {
+      "midi": 67,
+      "instrument": "pluck",
+      "onsetSeconds": 15.398
+    },
+    {
+      "midi": 64,
+      "instrument": "pluck",
+      "onsetSeconds": 16.875
+    },
+    {
+      "midi": 69,
+      "instrument": "pluck",
+      "onsetSeconds": 16.898
+    },
+    {
+      "midi": 72,
+      "instrument": "wood",
+      "onsetSeconds": 15.375
+    },
+    {
+      "midi": 69,
+      "instrument": "wood",
+      "onsetSeconds": 16.5
+    },
+    {
+      "midi": 72,
+      "instrument": "wood",
+      "onsetSeconds": 17.25
+    },
+    {
+      "midi": 48,
+      "instrument": "pad",
+      "onsetSeconds": 18.0
+    },
+    {
+      "midi": 50,
+      "instrument": "pad",
+      "onsetSeconds": 18.0
+    },
+    {
+      "midi": 53,
+      "instrument": "pad",
+      "onsetSeconds": 18.0
+    },
+    {
+      "midi": 57,
+      "instrument": "pad",
+      "onsetSeconds": 18.0
+    },
+    {
+      "midi": 38,
+      "instrument": "bass",
+      "onsetSeconds": 18.012
+    },
+    {
+      "midi": 45,
+      "instrument": "bass",
+      "onsetSeconds": 19.875
+    },
+    {
+      "midi": 60,
+      "instrument": "pluck",
+      "onsetSeconds": 18.375
+    },
+    {
+      "midi": 65,
+      "instrument": "pluck",
+      "onsetSeconds": 18.398
+    },
+    {
+      "midi": 62,
+      "instrument": "pluck",
+      "onsetSeconds": 19.875
+    },
+    {
+      "midi": 69,
+      "instrument": "pluck",
+      "onsetSeconds": 19.898
+    },
+    {
+      "midi": 74,
+      "instrument": "wood",
+      "onsetSeconds": 18.0
+    },
+    {
+      "midi": 76,
+      "instrument": "wood",
+      "onsetSeconds": 19.125
+    },
+    {
+      "midi": 74,
+      "instrument": "wood",
+      "onsetSeconds": 20.25
+    },
+    {
+      "midi": 47,
+      "instrument": "pad",
+      "onsetSeconds": 21.0
+    },
+    {
+      "midi": 50,
+      "instrument": "pad",
+      "onsetSeconds": 21.0
+    },
+    {
+      "midi": 55,
+      "instrument": "pad",
+      "onsetSeconds": 21.0
+    },
+    {
+      "midi": 57,
+      "instrument": "pad",
+      "onsetSeconds": 21.0
+    },
+    {
+      "midi": 43,
+      "instrument": "bass",
+      "onsetSeconds": 21.012
+    },
+    {
+      "midi": 59,
+      "instrument": "pluck",
+      "onsetSeconds": 21.375
+    },
+    {
+      "midi": 67,
+      "instrument": "pluck",
+      "onsetSeconds": 21.398
+    },
+    {
+      "midi": 62,
+      "instrument": "pluck",
+      "onsetSeconds": 22.875
+    },
+    {
+      "midi": 69,
+      "instrument": "pluck",
+      "onsetSeconds": 22.898
+    },
+    {
+      "midi": 71,
+      "instrument": "wood",
+      "onsetSeconds": 21.375
+    },
+    {
+      "midi": 74,
+      "instrument": "wood",
+      "onsetSeconds": 22.5
+    },
+    {
+      "midi": 48,
+      "instrument": "pad",
+      "onsetSeconds": 24.0
+    },
+    {
+      "midi": 52,
+      "instrument": "pad",
+      "onsetSeconds": 24.0
+    },
+    {
+      "midi": 53,
+      "instrument": "pad",
+      "onsetSeconds": 24.0
+    },
+    {
+      "midi": 57,
+      "instrument": "pad",
+      "onsetSeconds": 24.0
+    },
+    {
+      "midi": 41,
+      "instrument": "bass",
+      "onsetSeconds": 24.012
+    },
+    {
+      "midi": 48,
+      "instrument": "bass",
+      "onsetSeconds": 25.875
+    },
+    {
+      "midi": 60,
+      "instrument": "pluck",
+      "onsetSeconds": 24.375
+    },
+    {
+      "midi": 65,
+      "instrument": "pluck",
+      "onsetSeconds": 24.398
+    },
+    {
+      "midi": 64,
+      "instrument": "pluck",
+      "onsetSeconds": 25.875
+    },
+    {
+      "midi": 69,
+      "instrument": "pluck",
+      "onsetSeconds": 25.898
+    },
+    {
+      "midi": 77,
+      "instrument": "wood",
+      "onsetSeconds": 24.0
+    },
+    {
+      "midi": 81,
+      "instrument": "wood",
+      "onsetSeconds": 24.75
+    },
+    {
+      "midi": 79,
+      "instrument": "wood",
+      "onsetSeconds": 25.875
+    },
+    {
+      "midi": 48,
+      "instrument": "pad",
+      "onsetSeconds": 27.0
+    },
+    {
+      "midi": 52,
+      "instrument": "pad",
+      "onsetSeconds": 27.0
+    },
+    {
+      "midi": 55,
+      "instrument": "pad",
+      "onsetSeconds": 27.0
+    },
+    {
+      "midi": 59,
+      "instrument": "pad",
+      "onsetSeconds": 27.0
+    },
+    {
+      "midi": 40,
+      "instrument": "bass",
+      "onsetSeconds": 27.012
+    },
+    {
+      "midi": 47,
+      "instrument": "bass",
+      "onsetSeconds": 28.875
+    },
+    {
+      "midi": 60,
+      "instrument": "pluck",
+      "onsetSeconds": 27.375
+    },
+    {
+      "midi": 67,
+      "instrument": "pluck",
+      "onsetSeconds": 27.398
+    },
+    {
+      "midi": 64,
+      "instrument": "pluck",
+      "onsetSeconds": 28.875
+    },
+    {
+      "midi": 71,
+      "instrument": "pluck",
+      "onsetSeconds": 28.898
+    },
+    {
+      "midi": 76,
+      "instrument": "wood",
+      "onsetSeconds": 27.375
+    },
+    {
+      "midi": 79,
+      "instrument": "wood",
+      "onsetSeconds": 28.5
+    },
+    {
+      "midi": 76,
+      "instrument": "wood",
+      "onsetSeconds": 29.25
+    },
+    {
+      "midi": 48,
+      "instrument": "pad",
+      "onsetSeconds": 30.0
+    },
+    {
+      "midi": 50,
+      "instrument": "pad",
+      "onsetSeconds": 30.0
+    },
+    {
+      "midi": 53,
+      "instrument": "pad",
+      "onsetSeconds": 30.0
+    },
+    {
+      "midi": 57,
+      "instrument": "pad",
+      "onsetSeconds": 30.0
+    },
+    {
+      "midi": 38,
+      "instrument": "bass",
+      "onsetSeconds": 30.012
+    },
+    {
+      "midi": 45,
+      "instrument": "bass",
+      "onsetSeconds": 31.875
+    },
+    {
+      "midi": 60,
+      "instrument": "pluck",
+      "onsetSeconds": 30.375
+    },
+    {
+      "midi": 65,
+      "instrument": "pluck",
+      "onsetSeconds": 30.398
+    },
+    {
+      "midi": 62,
+      "instrument": "pluck",
+      "onsetSeconds": 31.875
+    },
+    {
+      "midi": 69,
+      "instrument": "pluck",
+      "onsetSeconds": 31.898
+    },
+    {
+      "midi": 74,
+      "instrument": "wood",
+      "onsetSeconds": 30.0
+    },
+    {
+      "midi": 77,
+      "instrument": "wood",
+      "onsetSeconds": 31.125
+    },
+    {
+      "midi": 76,
+      "instrument": "wood",
+      "onsetSeconds": 32.25
+    },
+    {
+      "midi": 47,
+      "instrument": "pad",
+      "onsetSeconds": 33.0
+    },
+    {
+      "midi": 50,
+      "instrument": "pad",
+      "onsetSeconds": 33.0
+    },
+    {
+      "midi": 55,
+      "instrument": "pad",
+      "onsetSeconds": 33.0
+    },
+    {
+      "midi": 57,
+      "instrument": "pad",
+      "onsetSeconds": 33.0
+    },
+    {
+      "midi": 43,
+      "instrument": "bass",
+      "onsetSeconds": 33.012
+    },
+    {
+      "midi": 59,
+      "instrument": "pluck",
+      "onsetSeconds": 33.375
+    },
+    {
+      "midi": 67,
+      "instrument": "pluck",
+      "onsetSeconds": 33.398
+    },
+    {
+      "midi": 62,
+      "instrument": "pluck",
+      "onsetSeconds": 34.875
+    },
+    {
+      "midi": 69,
+      "instrument": "pluck",
+      "onsetSeconds": 34.898
+    },
+    {
+      "midi": 74,
+      "instrument": "wood",
+      "onsetSeconds": 33.375
+    },
+    {
+      "midi": 71,
+      "instrument": "wood",
+      "onsetSeconds": 34.5
+    },
+    {
+      "midi": 48,
+      "instrument": "pad",
+      "onsetSeconds": 36.0
+    },
+    {
+      "midi": 52,
+      "instrument": "pad",
+      "onsetSeconds": 36.0
+    },
+    {
+      "midi": 55,
+      "instrument": "pad",
+      "onsetSeconds": 36.0
+    },
+    {
+      "midi": 57,
+      "instrument": "pad",
+      "onsetSeconds": 36.0
+    },
+    {
+      "midi": 48,
+      "instrument": "bass",
+      "onsetSeconds": 36.012
+    },
+    {
+      "midi": 55,
+      "instrument": "bass",
+      "onsetSeconds": 37.875
+    },
+    {
+      "midi": 60,
+      "instrument": "pluck",
+      "onsetSeconds": 36.375
+    },
+    {
+      "midi": 67,
+      "instrument": "pluck",
+      "onsetSeconds": 36.398
+    },
+    {
+      "midi": 64,
+      "instrument": "pluck",
+      "onsetSeconds": 37.875
+    },
+    {
+      "midi": 69,
+      "instrument": "pluck",
+      "onsetSeconds": 37.898
+    },
+    {
+      "midi": 72,
+      "instrument": "wood",
+      "onsetSeconds": 36.0
+    },
+    {
+      "midi": 76,
+      "instrument": "wood",
+      "onsetSeconds": 37.125
+    },
+    {
+      "midi": 79,
+      "instrument": "wood",
+      "onsetSeconds": 37.875
+    },
+    {
+      "midi": 48,
+      "instrument": "pad",
+      "onsetSeconds": 39.0
+    },
+    {
+      "midi": 52,
+      "instrument": "pad",
+      "onsetSeconds": 39.0
+    },
+    {
+      "midi": 55,
+      "instrument": "pad",
+      "onsetSeconds": 39.0
+    },
+    {
+      "midi": 57,
+      "instrument": "pad",
+      "onsetSeconds": 39.0
+    },
+    {
+      "midi": 45,
+      "instrument": "bass",
+      "onsetSeconds": 39.012
+    },
+    {
+      "midi": 52,
+      "instrument": "bass",
+      "onsetSeconds": 40.875
+    },
+    {
+      "midi": 60,
+      "instrument": "pluck",
+      "onsetSeconds": 39.375
+    },
+    {
+      "midi": 67,
+      "instrument": "pluck",
+      "onsetSeconds": 39.398
+    },
+    {
+      "midi": 64,
+      "instrument": "pluck",
+      "onsetSeconds": 40.875
+    },
+    {
+      "midi": 69,
+      "instrument": "pluck",
+      "onsetSeconds": 40.898
+    },
+    {
+      "midi": 76,
+      "instrument": "wood",
+      "onsetSeconds": 39.375
+    },
+    {
+      "midi": 72,
+      "instrument": "wood",
+      "onsetSeconds": 40.5
+    },
+    {
+      "midi": 48,
+      "instrument": "pad",
+      "onsetSeconds": 42.0
+    },
+    {
+      "midi": 52,
+      "instrument": "pad",
+      "onsetSeconds": 42.0
+    },
+    {
+      "midi": 53,
+      "instrument": "pad",
+      "onsetSeconds": 42.0
+    },
+    {
+      "midi": 57,
+      "instrument": "pad",
+      "onsetSeconds": 42.0
+    },
+    {
+      "midi": 41,
+      "instrument": "bass",
+      "onsetSeconds": 42.012
+    },
+    {
+      "midi": 48,
+      "instrument": "bass",
+      "onsetSeconds": 43.875
+    },
+    {
+      "midi": 60,
+      "instrument": "pluck",
+      "onsetSeconds": 42.375
+    },
+    {
+      "midi": 65,
+      "instrument": "pluck",
+      "onsetSeconds": 42.398
+    },
+    {
+      "midi": 64,
+      "instrument": "pluck",
+      "onsetSeconds": 43.875
+    },
+    {
+      "midi": 69,
+      "instrument": "pluck",
+      "onsetSeconds": 43.898
+    },
+    {
+      "midi": 69,
+      "instrument": "wood",
+      "onsetSeconds": 42.0
+    },
+    {
+      "midi": 72,
+      "instrument": "wood",
+      "onsetSeconds": 43.125
+    },
+    {
+      "midi": 74,
+      "instrument": "wood",
+      "onsetSeconds": 44.25
+    },
+    {
+      "midi": 47,
+      "instrument": "pad",
+      "onsetSeconds": 45.0
+    },
+    {
+      "midi": 50,
+      "instrument": "pad",
+      "onsetSeconds": 45.0
+    },
+    {
+      "midi": 55,
+      "instrument": "pad",
+      "onsetSeconds": 45.0
+    },
+    {
+      "midi": 57,
+      "instrument": "pad",
+      "onsetSeconds": 45.0
+    },
+    {
+      "midi": 43,
+      "instrument": "bass",
+      "onsetSeconds": 45.012
+    },
+    {
+      "midi": 59,
+      "instrument": "pluck",
+      "onsetSeconds": 45.375
+    },
+    {
+      "midi": 67,
+      "instrument": "pluck",
+      "onsetSeconds": 45.398
+    },
+    {
+      "midi": 62,
+      "instrument": "pluck",
+      "onsetSeconds": 46.875
+    },
+    {
+      "midi": 69,
+      "instrument": "pluck",
+      "onsetSeconds": 46.898
+    },
+    {
+      "midi": 71,
+      "instrument": "wood",
+      "onsetSeconds": 45.375
+    },
+    {
+      "midi": 74,
+      "instrument": "wood",
+      "onsetSeconds": 46.5
+    }
+  ]
+}

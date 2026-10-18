@@ -29,8 +29,8 @@ export default defineConfig({
         ],
       },
       workbox: {
-        // 遊戲音效只快取網頁版 MP3；WAV 母檔與音效試聽頁不放進離線快取。
-        globPatterns: ['**/*.{js,css,html,svg,png,ico,webmanifest}', 'audio/**/*.mp3'],
+        // 遊戲音效與動物叫聲只快取網頁版 MP3；WAV 母檔、尚未接入的 BGM 與音效試聽頁不放進離線快取。
+        globPatterns: ['**/*.{js,css,html,svg,png,ico,webmanifest}', 'audio/{sfx,animals}/*.mp3'],
         globIgnores: ['**/node_modules/**', 'audio-preview/**'],
         cleanupOutdatedCaches: true,
         // 字型來自 Google Fonts：第一次連網時存起來，之後離線也有圓體字。

@@ -96,7 +96,7 @@ scripts/
   ai.selfplay.ts   AI 自我對弈（npm run ai:selfplay，不在一般測試裡跑）
 public/
   icon.svg         App 圖示原稿；npm run icons 產生各尺寸 PNG（一併提交）
-  audio/           遊戲音效（sfx/）與動物叫聲（animals/），WAV 母檔＋MP3 網頁版
+  audio/           遊戲音效（sfx/）、動物叫聲（animals/）與 BGM 試作（bgm/），WAV 母檔＋MP3 網頁版
   audio-preview/   音效試聽頁（不進離線快取）
 pwa-assets.config.ts  圖示產生設定
 ```
@@ -259,7 +259,7 @@ type GameEvent =
 ### 8.3 PWA
 
 - `vite-plugin-pwa`（generateSW）：預先快取所有程式、樣式、圖示與 AI 的 Worker，第一次連網打開後就能離線玩。
-- 遊戲音效的 MP3（`public/audio/`）一併預先快取；WAV 母檔與音效試聽頁（`public/audio-preview/`）不放進快取。
+- 遊戲音效與動物叫聲的 MP3（`public/audio/sfx/`、`public/audio/animals/`）一併預先快取；WAV 母檔、尚未接入的 BGM（`public/audio/bgm/`）與音效試聽頁（`public/audio-preview/`）不放進快取。
 - Google Fonts 的字型在第一次連網使用時存進快取（CSS 用 StaleWhileRevalidate、字型檔用 CacheFirst）；還沒存到時離線會改用系統字型。
 - 更新方式 `autoUpdate`：新版的 service worker 裝好就接手，但**不會自動重新整理**（避免小朋友下到一半畫面被重整），下次打開才換成新版。
 - `base: './'`：放在網域根目錄或子路徑都能用。**要加到主畫面、離線玩，網站必須是 HTTPS**（`localhost` 除外），用區網 IP 開發伺服器在平板上測不到離線。
