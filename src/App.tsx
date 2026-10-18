@@ -90,6 +90,31 @@ export function App() {
                 }}
               />
             </label>
+            <div className="music">
+              <label className="toggle">
+                <input
+                  type="checkbox"
+                  checked={s.sound.music}
+                  disabled={!s.sound.on}
+                  onChange={e => {
+                    s.setAudio({ music: e.target.checked });
+                    audio.play('ui.tap');
+                  }}
+                />
+                {ui.music}
+              </label>
+              <input
+                type="range"
+                className="slider"
+                min={0}
+                max={100}
+                step={5}
+                aria-label={ui.musicVolume}
+                value={Math.round(s.sound.musicVolume * 100)}
+                disabled={!s.sound.on || !s.sound.music}
+                onChange={e => s.setAudio({ musicVolume: Number(e.target.value) / 100 })}
+              />
+            </div>
             <label className="toggle">
               <input
                 type="checkbox"

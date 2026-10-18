@@ -38,7 +38,9 @@
 .prefs{display:flex; flex-wrap:wrap; align-items:center; gap:6px 18px}
 .toggle{display:flex; align-items:center; gap:6px; font-size:14px; color:var(--muted); cursor:pointer; justify-self:start}
 .toggle:has(:disabled){opacity:.5; cursor:default}
-.volume input{width:110px; accent-color:var(--accent)}
+.volume input,.music .slider{width:110px; accent-color:var(--accent)}
+.music{display:flex; align-items:center; gap:6px}
+.music .slider:disabled{opacity:.5}
 .legend{display:flex; flex-wrap:wrap; gap:6px 16px; list-style:none; margin:0; padding:0; font-size:13px; color:var(--muted)}
 .legend li{display:flex; align-items:center; gap:6px}
 .sw{width:14px; height:14px; border-radius:4px; display:inline-block}
