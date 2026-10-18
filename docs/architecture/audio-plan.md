@@ -1,8 +1,11 @@
 # 音效規劃
 
 > 日期：2026-10-18
-> 狀態：設計提案，尚未實作或製作音檔；音量、長度與冷卻時間為試聽起始值。
+> 狀態：15 個核心音效 v1 已於 2026-10-18 經使用者試聽通過；8 種動物叫聲 v1 已完成（WAV＋MP3），待試聽。尚未接入遊戲，整合後的混音、同步與冷卻時間仍需驗收。
 > 依據：[技術架構](README.md)、現有對局流程與動畫導演。
+> 試聽：[試聽頁](../../public/audio-preview/index.html)；開啟方式與音檔資訊見[樣本說明](../../public/audio-preview/README.md)。
+> 交付：[核心音效資產與實際長度](../../public/audio/sfx/README.md)、[資產清單](../../public/audio/sfx/manifest.json)。
+> 動物叫聲：[八種動物叫聲資產](../../public/audio/animals/README.md)、[資產清單](../../public/audio/animals/manifest.json)。
 
 ## 1. 設計方向
 
