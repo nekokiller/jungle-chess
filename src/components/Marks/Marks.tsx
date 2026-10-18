@@ -1,5 +1,5 @@
-import type { CSSProperties } from 'react';
 import type { Move } from '../../engine';
+import { placeAt } from '../../animation/registry';
 
 const PAW = (
   <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -12,14 +12,14 @@ const PAW = (
 );
 
 /** 合法落點：空格是腳印、可以吃的是紅圈、跳河外加旋轉虛線圈。 */
-export function Marks({ moves }: { moves: readonly Move[] }) {
+export function Marks({ moves, flipped }: { moves: readonly Move[]; flipped: boolean }) {
   return (
     <div className="layer marks">
       {moves.map(m => (
         <span
           key={`${m.to.row}-${m.to.col}`}
           className={`mark ${m.captured ? 'bite' : 'paw'}${m.kind === 'jump' ? ' jump' : ''}`}
-          style={{ '--r': m.to.row, '--c': m.to.col } as CSSProperties}
+          style={placeAt(m.to, flipped)}
         >
           {!m.captured && PAW}
         </span>

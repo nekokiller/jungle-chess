@@ -1,4 +1,4 @@
-// 對局層：目前的對局、選取、提示文字、悔棋，以及「點格子 → 引擎 → 動畫導演」和 AI 回合的流程。
+// 對局層：開局設定、目前的對局、選取、提示文字、悔棋，以及「點格子 → 引擎 → 動畫導演」和 AI 回合的流程。
 import { flushSync } from 'react-dom';
 import { create } from 'zustand';
 import {
@@ -20,8 +20,8 @@ import {
 } from '../engine';
 import { headshake, playMove, type DirectorStage, type Ghost } from '../animation/director';
 import { T, prefs } from '../animation/timings';
+import { view } from '../animation/registry';
 import { requestMove } from '../ai/client';
-import { DEFAULT_LEVEL, type LevelId } from '../ai/levels';
 import { confetti } from '../components/Effects/effects';
 import type { Face } from '../components/Animal/Animal';
 import {
@@ -36,11 +36,21 @@ import {
   turnPrompt,
   undone,
   waitForAi,
+  welcome,
   yourTurnPrompt,
   type SelectContext,
 } from '../copy/zh-TW';
+import {
+  firstSide,
+  isFlipped,
+  loadReduceMotion,
+  loadSettings,
+  saveReduceMotion,
+  saveSettings,
+  type Settings,
+} from './settings';
 
-export type Mode = 'ai' | 'pvp';
+export type { Mode, Settings } from './settings';
 
 type PlayOk = Extract<ReturnType<typeof play>, { ok: true }>;
 
@@ -48,10 +58,14 @@ interface GameStore {
   game: GameState;
   /** 每一步之前的對局，用來悔棋。 */
   history: GameState[];
-  mode: Mode;
-  level: LevelId;
-  /** 和電腦下時玩家是哪一方（開局設定在 M4）。 */
-  humanSide: Side;
+  /** 這一局的設定。 */
+  settings: Settings;
+  /** 開局設定視窗打開中。 */
+  setupOpen: boolean;
+  /** 已經開始下過（設定視窗可以按「取消」回到對局）。 */
+  started: boolean;
+  /** 棋盤上下顛倒（玩家執藍方）。 */
+  flipped: boolean;
   selected: Pos | null;
   /** 動畫播放中，暫停操作。 */
   busy: boolean;
@@ -68,12 +82,20 @@ interface GameStore {
   reduceMotion: boolean;
 
   clickCell(pos: Pos): void;
+  /** 用新的設定開一局。 */
+  start(settings: Settings): void;
+  /** 用同樣的設定再下一局。 */
   newGame(): void;
+  openSetup(): void;
+  closeSetup(): void;
   undo(): void;
-  setMode(mode: Mode): void;
-  setLevel(level: LevelId): void;
   setReduceMotion(on: boolean): void;
 }
+
+/** 有沒有可以退回去的一步：和電腦下時，要退得回輪到玩家的局面。 */
+export const canUndo = (s: Pick<GameStore, 'history' | 'busy' | 'settings'>): boolean =>
+  !s.busy &&
+  (s.settings.mode === 'ai' ? s.history.some(g => g.turn === s.settings.humanSide) : s.history.length > 0);
 
 const systemReducedMotion = () =>
   typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -100,10 +122,11 @@ export const useGame = create<GameStore>()((set, get) => {
   let aiToken = 0;
 
   const say = (message: string) => set(s => ({ message, messageKey: s.messageKey + 1 }));
-  const vsAi = () => get().mode === 'ai';
-  const isAiTurn = () => vsAi() && get().game.turn !== get().humanSide;
+  const vsAi = () => get().settings.mode === 'ai';
+  const humanSide = () => get().settings.humanSide;
+  const isAiTurn = () => vsAi() && get().game.turn !== humanSide();
   /** 「藍方」「你」「電腦」 */
-  const who = (side: Side) => (vsAi() ? (side === get().humanSide ? '你' : '電腦') : SIDE[side]);
+  const who = (side: Side) => (vsAi() ? (side === humanSide() ? '你' : '電腦') : SIDE[side]);
   const prompt = (side: Side) => (vsAi() ? yourTurnPrompt(side) : turnPrompt(side));
 
   const setFace = (id: string, face: Face | null) =>
@@ -125,9 +148,9 @@ export const useGame = create<GameStore>()((set, get) => {
   };
 
   function finish(result: GameResult, mover: Piece) {
-    const text = resultLine(result, mover, vsAi() ? get().humanSide : undefined);
+    const text = resultLine(result, mover, vsAi() ? humanSide() : undefined);
     say(text);
-    if (result.winner && (!vsAi() || result.winner === get().humanSide)) confetti(46);
+    if (result.winner && (!vsAi() || result.winner === humanSide())) confetti(46);
     const game = get().game;
     setTimeout(() => {
       // 等待期間如果已經重新開始或悔棋，就不要再跳出結果。
@@ -151,9 +174,10 @@ export const useGame = create<GameStore>()((set, get) => {
   }
 
   async function aiTurn() {
-    if (!isAiTurn() || get().game.result) return;
+    if (!isAiTurn() || get().game.result || get().setupOpen) return;
     const token = ++aiToken;
-    const { game, level } = get();
+    const { game } = get();
+    const { level } = get().settings;
     set({ thinking: true });
     say(aiThinking);
     // AI 至少「想」0.5 秒，小朋友才來得及看。
@@ -173,20 +197,28 @@ export const useGame = create<GameStore>()((set, get) => {
     set({ game, history, selected: null, busy: false, thinking: false, ghosts: [], faces: {}, dry: null, resultText: null });
   }
 
-  const initialReduced = systemReducedMotion();
-  prefs.reduced = initialReduced;
-  if (typeof document !== 'undefined') document.documentElement.dataset.motion = initialReduced ? 'reduced' : 'full';
+  function applyMotion(on: boolean) {
+    prefs.reduced = on;
+    if (typeof document !== 'undefined') document.documentElement.dataset.motion = on ? 'reduced' : 'full';
+  }
+
+  const initialSettings = loadSettings();
+  const initialReduced = loadReduceMotion() ?? systemReducedMotion();
+  applyMotion(initialReduced);
+  view.flipped = isFlipped(initialSettings);
 
   return {
-    game: createGame(),
+    // 一打開先顯示開局設定，盤面先擺好當背景。
+    game: createGame(undefined, firstSide(initialSettings)),
     history: [],
-    mode: 'ai',
-    level: DEFAULT_LEVEL,
-    humanSide: 'red',
+    settings: initialSettings,
+    setupOpen: true,
+    started: false,
+    flipped: view.flipped,
     selected: null,
     busy: false,
     thinking: false,
-    message: yourTurnPrompt('red'),
+    message: welcome,
     messageKey: 0,
     ghosts: [],
     faces: {},
@@ -195,8 +227,8 @@ export const useGame = create<GameStore>()((set, get) => {
     reduceMotion: initialReduced,
 
     clickCell(pos) {
-      const { game, selected, busy, thinking } = get();
-      if (busy || game.result || !inBounds(pos)) return;
+      const { game, selected, busy, thinking, setupOpen } = get();
+      if (setupOpen || busy || game.result || !inBounds(pos)) return;
       if (thinking || isAiTurn()) return say(waitForAi);
       const piece = pieceAt(game.board, pos);
 
@@ -231,36 +263,52 @@ export const useGame = create<GameStore>()((set, get) => {
       void runMove(result);
     },
 
+    start(settings) {
+      saveSettings(settings);
+      view.flipped = isFlipped(settings);
+      set({ settings, flipped: view.flipped, setupOpen: false });
+      get().newGame();
+    },
+
     newGame() {
-      reset(createGame(), []);
-      say(prompt('red'));
+      const first = firstSide(get().settings);
+      reset(createGame(undefined, first), []);
+      set({ setupOpen: false, started: true });
+      say(prompt(first));
+      void aiTurn();
+    },
+
+    openSetup() {
+      if (get().busy) return;
+      // 打開設定時先停下電腦，關掉後再繼續。
+      aiToken++;
+      set({ setupOpen: true, thinking: false, selected: null });
+    },
+
+    closeSetup() {
+      if (!get().started) return;
+      set({ setupOpen: false });
+      const { game } = get();
+      if (!game.result) say(isAiTurn() ? aiThinking : prompt(game.turn));
       void aiTurn();
     },
 
     undo() {
-      const { busy, history } = get();
-      if (busy || history.length === 0) return;
+      const state = get();
+      if (!canUndo(state)) return;
+      const { history } = state;
       // 和電腦下：退回上一次輪到玩家的時候（通常是退兩步：電腦的和自己的）。
       let i = history.length - 1;
-      if (vsAi()) while (i > 0 && history[i]!.turn !== get().humanSide) i--;
+      if (vsAi()) while (i > 0 && history[i]!.turn !== humanSide()) i--;
       const game = history[i]!;
       reset(game, history.slice(0, i));
       say(undone);
       void aiTurn();
     },
 
-    setMode(mode) {
-      set({ mode });
-      get().newGame();
-    },
-
-    setLevel(level) {
-      set({ level });
-    },
-
     setReduceMotion(on) {
-      prefs.reduced = on;
-      document.documentElement.dataset.motion = on ? 'reduced' : 'full';
+      applyMotion(on);
+      saveReduceMotion(on);
       set({ reduceMotion: on });
     },
   };

@@ -1,4 +1,4 @@
-import { memo, useMemo, type CSSProperties } from 'react';
+import { memo, useMemo } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import {
   COLS,
@@ -14,14 +14,12 @@ import {
   type Piece,
   type Pos,
 } from '../../engine';
-import { registerPiece, stage } from '../../animation/registry';
+import { placeAt as at, registerPiece, stage, toView } from '../../animation/registry';
 import { useGame } from '../../session/store';
 import { FULL, SIDE, TERRAIN, ui } from '../../copy/zh-TW';
 import { Animal, type AnimalState, type Face } from '../Animal/Animal';
 import { Marks } from '../Marks/Marks';
 import './board.css';
-
-const at = (pos: Pos): CSSProperties => ({ '--r': pos.row, '--c': pos.col }) as CSSProperties;
 
 function terrainOf(pos: Pos) {
   if (isWater(pos)) return { cls: 'water', label: TERRAIN.water, owner: null };
@@ -32,12 +30,14 @@ function terrainOf(pos: Pos) {
   return { cls: (pos.row + pos.col) % 2 ? 'alt' : '', label: TERRAIN.grass, owner: null };
 }
 
-const Cells = memo(function Cells({ board }: { board: (Piece | null)[][] }) {
+const Cells = memo(function Cells({ board, flipped }: { board: (Piece | null)[][]; flipped: boolean }) {
   const clickCell = useGame(s => s.clickCell);
   const cells = [];
-  for (let row = 0; row < ROWS; row++) {
-    for (let col = 0; col < COLS; col++) {
-      const pos = { row, col };
+  // 依畫面上的順序排格子（鍵盤 Tab 也照這個順序）。
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      const pos = toView({ row: r, col: c }, flipped);
+      const { row, col } = pos;
       const t = terrainOf(pos);
       const p = board[row]![col];
       const label = `${toSquare(pos)}，${t.owner ? SIDE[t.owner] : ''}${t.label}${p ? `，${SIDE[p.side]}${FULL[p.type]}` : ''}`;
@@ -67,15 +67,16 @@ interface PieceViewProps {
   face: Face;
   rank: number;
   inWater: boolean;
+  flipped: boolean;
   ghost?: boolean;
 }
 
-const PieceView = memo(function PieceView({ piece, pos, state, face, rank, inWater, ghost }: PieceViewProps) {
+const PieceView = memo(function PieceView({ piece, pos, state, face, rank, inWater, flipped, ghost }: PieceViewProps) {
   return (
     <div
       className={`piece${inWater ? ' in-water' : ''}`}
       ref={el => registerPiece(piece.id, el)}
-      style={{ ...at(pos), zIndex: ghost ? 1 : undefined }}
+      style={{ ...at(pos, flipped), zIndex: ghost ? 1 : undefined }}
     >
       <div className="travel">
         <div className="shadow" />
@@ -87,9 +88,10 @@ const PieceView = memo(function PieceView({ piece, pos, state, face, rank, inWat
 });
 
 export function Board() {
-  const { game, selected, thinking, ghosts, faces, dry, resultText, newGame } = useGame(
+  const { game, flipped, selected, thinking, ghosts, faces, dry, resultText, newGame, openSetup } = useGame(
     useShallow(s => ({
       game: s.game,
+      flipped: s.flipped,
       thinking: s.thinking,
       selected: s.selected,
       ghosts: s.ghosts,
@@ -97,6 +99,7 @@ export function Board() {
       dry: s.dry,
       resultText: s.resultText,
       newGame: s.newGame,
+      openSetup: s.openSetup,
     })),
   );
   const moves = useMemo(() => (selected ? movesFrom(game.board, selected) : []), [game, selected]);
@@ -131,6 +134,7 @@ export function Board() {
           face={face}
           rank={trapped ? 0 : RANK[piece.type]}
           inWater={isWater(pos) && dry !== piece.id}
+          flipped={flipped}
         />,
       );
     }
@@ -145,6 +149,7 @@ export function Board() {
         face={faces[g.piece.id] ?? 'hurt'}
         rank={RANK[g.piece.type]}
         inWater={isWater(g.pos)}
+        flipped={flipped}
         ghost
       />,
     );
@@ -153,19 +158,24 @@ export function Board() {
   return (
     <div className="board-wrap">
       <div className="board" ref={el => void (stage.board = el)}>
-        <Cells board={game.board} />
+        <Cells board={game.board} flipped={flipped} />
       </div>
-      {selected && <span className="sel-glow" style={at(selected)} />}
+      {selected && <span className="sel-glow" style={at(selected, flipped)} />}
       <div className="layer pieces">{pieces}</div>
-      <Marks moves={moves} />
+      <Marks moves={moves} flipped={flipped} />
       <div className="layer fx" ref={el => void (stage.fx = el)} />
       {resultText && (
         <div className="result" role="dialog" aria-modal="true" aria-labelledby="result-title">
           <div className="result-card">
             <p className="result-title" id="result-title">{resultText}</p>
-            <button type="button" className="btn primary" autoFocus onClick={newGame}>
-              {ui.playAgain}
-            </button>
+            <div className="result-actions">
+              <button type="button" className="btn" onClick={openSetup}>
+                {ui.changeSetup}
+              </button>
+              <button type="button" className="btn primary" autoFocus onClick={newGame}>
+                {ui.playAgain}
+              </button>
+            </div>
           </div>
         </div>
       )}

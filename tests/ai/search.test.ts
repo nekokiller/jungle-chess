@@ -106,4 +106,15 @@ describe('六檔難度', () => {
     expect(missed).toBeGreaterThan(30);
     expect(missed).toBeLessThan(110);
   });
+
+  it('開局時不管輪到紅方或藍方，每一檔都走得出合法的一步', () => {
+    for (const turn of ['red', 'blue'] as const) {
+      const state = createGame(undefined, turn);
+      const legal = legalMoves(state.board, turn).map(m => `${toSquare(m.from)}-${toSquare(m.to)}`);
+      for (const level of LEVELS) {
+        const { move } = search(state, level);
+        expect(legal, `${level.id} ${turn}`).toContain(`${toSquare(move.from)}-${toSquare(move.to)}`);
+      }
+    }
+  });
 });
