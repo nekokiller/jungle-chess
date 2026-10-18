@@ -4,3 +4,4 @@
 
 - 規則與玩法調查：[docs/evaluation/](docs/evaluation/)
 - Git 操作（commit、分支）前，必須遵守 [docs/reference/Git規範.md](docs/reference/Git規範.md)。
+- 技術架構與開發階段：[docs/architecture/](docs/architecture/)
