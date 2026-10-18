@@ -1,0 +1,841 @@
+<!doctype html>
+<html lang="zh-Hant">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>動物棋角色原型</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Huninn&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap">
+<style>
+/* Layout: one centered column: intro, cast cards (auto-fit grid), playground (board + side panel), notes */
+:root{
+  --bg:#f2f6ea; --surface:#ffffff; --ink:#1f2a1b; --muted:#5b6852; --line:#d9e3cc;
+  --accent:#f5b82e; --accent-ink:#4a3200; --accent-soft:#fff1c7;
+  --grass-1:#a6d77f; --grass-2:#97cd70; --grass-line:rgba(40,80,20,.14);
+  --water-1:#5fbfe8; --trap:#9a6a35; --den:#6a4528; --den-hole:#2e1d10; --tag:rgba(30,40,20,.72);
+  --red:#e4574a; --red-plate:#ffe4dc; --blue:#3b7be0; --blue-plate:#dfe9ff;
+  --shadow:rgba(30,50,20,.28); --stage:#e5f2d5; --focus:#2f6fd6; --paw:rgba(255,255,255,.92); --bite:#ff5a4e;
+  --font-display:"Huninn","jf open 粉圓","PingFang TC","Microsoft JhengHei",sans-serif;
+  --font-body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#141c12; --surface:#1d271a; --ink:#e8f0df; --muted:#a2b097; --line:#33422d;
+    --accent:#f5c04a; --accent-ink:#2a1d00; --accent-soft:#3a3214;
+    --grass-1:#5d8f43; --grass-2:#54853c; --grass-line:rgba(0,0,0,.2);
+    --water-1:#2c84b0; --trap:#d3a468; --den:#4a311d; --den-hole:#120b05; --tag:rgba(255,255,255,.78);
+    --shadow:rgba(0,0,0,.45); --stage:#22301d; --focus:#7fb0ff;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#141c12; --surface:#1d271a; --ink:#e8f0df; --muted:#a2b097; --line:#33422d;
+  --accent:#f5c04a; --accent-ink:#2a1d00; --accent-soft:#3a3214;
+  --grass-1:#5d8f43; --grass-2:#54853c; --grass-line:rgba(0,0,0,.2);
+  --water-1:#2c84b0; --trap:#d3a468; --den:#4a311d; --den-hole:#120b05; --tag:rgba(255,255,255,.78);
+  --shadow:rgba(0,0,0,.45); --stage:#22301d; --focus:#7fb0ff;
+  color-scheme:dark;
+}
+
+body{
+  background:var(--bg); color:var(--ink); font-family:var(--font-body); font-size:15px; line-height:1.7;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  padding-block:28px 64px;
+}
+main{max-width:1040px; margin:0 auto; display:grid; gap:48px}
+h1,h2,h3{font-family:var(--font-display); font-weight:400; line-height:1.25; text-wrap:balance; margin:0}
+h1{font-size:clamp(32px, 6vw, 50px)}
+h2{font-size:26px}
+h3{font-size:20px}
+p{margin:0}
+button{font:inherit; color:inherit}
+:focus-visible{outline:3px solid var(--focus); outline-offset:2px}
+
+.intro{display:grid; gap:10px; max-width:680px}
+.eyebrow{font-size:13px; letter-spacing:.08em; color:var(--muted)}
+.lede{color:var(--muted); font-size:16px}
+
+section{display:grid; gap:14px}
+.sec-head{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px}
+.sec-note{color:var(--muted); max-width:65ch}
+
+.seg{display:inline-flex; background:var(--surface); border:1px solid var(--line); border-radius:999px; padding:3px}
+.seg button{border:0; background:transparent; padding:5px 16px; border-radius:999px; cursor:pointer; font-family:var(--font-display); font-size:15px}
+.seg button[aria-pressed="true"][data-side="r"]{background:var(--red); color:#fff}
+.seg button[aria-pressed="true"][data-side="b"]{background:var(--blue); color:#fff}
+
+.cast{display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr)); gap:16px}
+.card{background:var(--surface); border:1px solid var(--line); border-radius:20px; padding:16px; display:grid; gap:12px; min-width:0}
+.stage{position:relative; aspect-ratio:5/4; max-width:100%; background:radial-gradient(circle at 50% 62%, var(--grass-1) 0 34%, var(--stage) 35%); border-radius:14px; display:grid; place-items:center; overflow:hidden}
+.stage .animal{width:46%; aspect-ratio:1}
+.card-head{display:flex; align-items:baseline; justify-content:space-between; gap:8px}
+.card-head .rank{font-size:13px; color:var(--muted); font-variant-numeric:tabular-nums}
+.card .meta{font-size:14px; color:var(--muted)}
+.chips{display:flex; flex-wrap:wrap; gap:6px}
+.chip{border:1px solid var(--line); background:var(--bg); border-radius:999px; padding:4px 12px; cursor:pointer; font-family:var(--font-display); font-size:15px}
+.chip:hover{background:var(--accent-soft); border-color:var(--accent)}
+
+/* ---------- animal ---------- */
+.animal{position:relative}
+.animal .hop,.animal .lift,.animal .act,.animal .bob{width:100%; height:100%}
+.animal svg{display:block; width:100%; height:100%; overflow:visible}
+.animal .act{transform-origin:50% 88%}
+.animal .bob{transform-origin:50% 88%; animation:breathe 2.6s ease-in-out infinite; animation-delay:var(--d,0s)}
+.animal .lift{transition:transform .22s cubic-bezier(.3,1.6,.5,1)}
+.animal .plate{fill:var(--red-plate)}
+.animal .ring{fill:none; stroke:var(--red); stroke-width:5}
+.animal .badge circle{fill:var(--red); stroke:#fff; stroke-width:2}
+.animal[data-side="b"] .plate{fill:var(--blue-plate)}
+.animal[data-side="b"] .ring{stroke:var(--blue); stroke-width:6.5; stroke-dasharray:.1 7.3; stroke-linecap:round}
+.animal[data-side="b"] .badge circle{fill:var(--blue)}
+.animal .badge text{fill:#fff; font:700 13px var(--font-display)}
+.animal.trapped .badge circle{fill:#8b8b85}
+
+.animal .eyes path{fill:none; stroke:#3a2a22; stroke-width:2.8; stroke-linecap:round; stroke-linejoin:round}
+.animal .mouth path{fill:none; stroke:#5a3426; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round}
+.animal .mouth-happy path{fill:#b8473f; stroke-width:1.4}
+.animal .mouth-scared ellipse{fill:#5a3426}
+.animal .eyes-happy,.animal .eyes-scared,.animal .eyes-squeeze,.animal .mouth-happy,.animal .mouth-scared,.animal .sweat{display:none}
+.animal[data-face="happy"] .eyes-open,.animal[data-face="happy"] .mouth-normal{display:none}
+.animal[data-face="happy"] .eyes-happy,.animal[data-face="happy"] .mouth-happy{display:inline}
+.animal[data-face="scared"] .eyes-open,.animal[data-face="scared"] .mouth-normal{display:none}
+.animal[data-face="scared"] .eyes-scared,.animal[data-face="scared"] .mouth-scared,.animal[data-face="scared"] .sweat{display:inline}
+.animal[data-face="hurt"] .eyes-open,.animal[data-face="hurt"] .mouth-normal{display:none}
+.animal[data-face="hurt"] .eyes-squeeze,.animal[data-face="hurt"] .mouth-scared{display:inline}
+.animal .eye{transform-box:fill-box; transform-origin:center; transition:transform 70ms}
+.animal.blink .eye{transform:scaleY(.12)}
+
+/* idle personalities */
+.lion .mane{transform-origin:50px 52px; animation:mane 3.4s ease-in-out infinite; animation-delay:var(--d,0s)}
+.cat .tail{transform-origin:63px 76px; animation:swish 2.3s ease-in-out infinite; animation-delay:var(--d,0s)}
+.cat .ear-r{transform-origin:62px 37px; animation:twitch 4.4s ease-out infinite; animation-delay:var(--d,0s)}
+.cat .wl{transform-origin:38px 61px} .cat .wr{transform-origin:62px 61px}
+.rat .wl{transform-origin:41px 65px} .rat .wr{transform-origin:59px 65px}
+.animal .wl{animation:whiskL 1.7s ease-in-out infinite; animation-delay:var(--d,0s)}
+.animal .wr{animation:whiskR 1.7s ease-in-out infinite; animation-delay:var(--d,0s)}
+.cat .wl,.cat .wr{animation-duration:3.4s}
+.rat .nose{transform-box:fill-box; transform-origin:center; animation:sniff 1.7s ease-in-out infinite; animation-delay:var(--d,0s)}
+.rat .rtail{transform-origin:62px 74px; animation:swish 3s ease-in-out infinite; animation-delay:var(--d,0s)}
+.rat .ear-l{transform-origin:38px 42px; animation:earL 5s ease-in-out infinite; animation-delay:var(--d,0s)}
+.animal .sweat{animation:drip 1.1s ease-in infinite}
+
+@keyframes breathe{0%,100%{transform:scale(1,1)}50%{transform:scale(.985,1.03)}}
+@keyframes mane{0%,100%{transform:rotate(-4deg) scale(1)}50%{transform:rotate(4deg) scale(1.045)}}
+@keyframes swish{0%,100%{transform:rotate(-9deg)}50%{transform:rotate(13deg)}}
+@keyframes twitch{0%,84%,100%{transform:rotate(0)}87%{transform:rotate(-15deg)}91%{transform:rotate(5deg)}95%{transform:rotate(-8deg)}}
+@keyframes whiskL{0%,40%,100%{transform:rotate(0)}50%{transform:rotate(7deg)}60%{transform:rotate(-3deg)}70%{transform:rotate(5deg)}}
+@keyframes whiskR{0%,40%,100%{transform:rotate(0)}50%{transform:rotate(-7deg)}60%{transform:rotate(3deg)}70%{transform:rotate(-5deg)}}
+@keyframes sniff{0%,38%,100%{transform:scale(1)}46%{transform:scale(1.28)}54%{transform:scale(1)}62%{transform:scale(1.28)}70%{transform:scale(1)}}
+@keyframes earL{0%,80%,100%{transform:rotate(0)}86%{transform:rotate(-10deg)}92%{transform:rotate(3deg)}}
+@keyframes drip{0%{transform:translateY(-2px); opacity:0}20%{opacity:1}100%{transform:translateY(9px); opacity:0}}
+
+/* states */
+.animal[data-state="selected"] .lift{transform:translateY(-12%) scale(1.07)}
+.animal[data-state="selected"] .bob{animation:perk .7s ease-in-out infinite}
+.animal[data-state="scared"] .bob{animation:shiver .18s linear infinite}
+.animal[data-state="celebrate"] .bob{animation:cheer .5s cubic-bezier(.3,0,.5,1) infinite alternate}
+@keyframes perk{0%,100%{transform:translateY(0)}50%{transform:translateY(-5%)}}
+@keyframes shiver{0%,100%{transform:translateX(0)}25%{transform:translateX(-2.5%) rotate(-2deg)}75%{transform:translateX(2.5%) rotate(2deg)}}
+@keyframes cheer{from{transform:translateY(0) scale(1.07,.93)}to{transform:translateY(-24%) scale(.96,1.05)}}
+
+/* ---------- playground ---------- */
+.play{--cell:min(64px, calc((100vw - 40px) / 7)); display:grid; grid-template-columns:auto minmax(0,1fr); gap:24px; align-items:start}
+@media (max-width:760px){ .play{grid-template-columns:minmax(0,1fr)} }
+.board-col{display:grid; gap:10px; justify-items:center; min-width:0}
+.bubble{position:relative; width:calc(var(--cell) * 7); max-width:100%; min-height:3.4em; display:flex; align-items:center; background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:8px 14px; font-family:var(--font-display); font-size:17px; line-height:1.4}
+.bubble::after{content:""; position:absolute; left:28px; bottom:-8px; width:14px; height:14px; background:var(--surface); border-right:1px solid var(--line); border-bottom:1px solid var(--line); transform:rotate(45deg)}
+.board-wrap{position:relative; width:calc(var(--cell) * 7); height:calc(var(--cell) * 5)}
+.board{display:grid; grid-template-columns:repeat(7, var(--cell)); grid-template-rows:repeat(5, var(--cell)); border-radius:18px; overflow:hidden; box-shadow:0 0 0 4px var(--surface), 0 10px 24px var(--shadow)}
+.cell{position:relative; border:0; margin:0; padding:0; cursor:pointer; background:var(--grass-1); box-shadow:inset 0 0 0 .5px var(--grass-line)}
+.cell.alt{background:var(--grass-2)}
+.cell.water{
+  background-color:var(--water-1); box-shadow:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 20' preserveAspectRatio='none'%3E%3Cpath d='M0 10 Q15 3 30 10 T60 10' fill='none' stroke='white' stroke-opacity='0.42' stroke-width='2.2' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
+  background-size:var(--cell) calc(var(--cell) / 3);
+  animation:waves 4.5s linear infinite;
+}
+@keyframes waves{to{background-position:var(--cell) 0}}
+.cell.trap,.cell.den{box-shadow:inset 0 0 0 2px color-mix(in srgb, var(--blue) 45%, transparent)}
+.trap-net{position:absolute; inset:16%; border-radius:30%; border:2px solid var(--trap); opacity:.75;
+  background:repeating-linear-gradient(45deg, transparent 0 5px, var(--trap) 5px 7px), repeating-linear-gradient(-45deg, transparent 0 5px, var(--trap) 5px 7px)}
+.cave{position:absolute; left:17%; right:17%; top:20%; bottom:16%; background:var(--den); border-radius:50% 50% 14% 14% / 62% 62% 14% 14%}
+.cave::after{content:""; position:absolute; left:28%; right:28%; top:34%; bottom:0; background:var(--den-hole); border-radius:50% 50% 0 0 / 70% 70% 0 0}
+.tag{position:absolute; left:0; right:0; bottom:2%; text-align:center; font-family:var(--font-display); font-size:calc(var(--cell) * .19); line-height:1.2; color:var(--tag)}
+.cell.sel::before{content:""; position:absolute; inset:4%; border-radius:50%; background:radial-gradient(circle, color-mix(in srgb, var(--accent) 80%, transparent) 0 45%, transparent 70%)}
+
+.layer{position:absolute; inset:0; pointer-events:none}
+.pieces{z-index:2} .marks{z-index:3} .fx{z-index:4}
+.piece,.mark{position:absolute; left:0; top:0; width:var(--cell); height:var(--cell); transform:translate(calc(var(--c) * var(--cell)), calc(var(--r) * var(--cell)))}
+.piece .animal{position:absolute; inset:6%}
+.shadow{position:absolute; left:20%; right:20%; bottom:3%; height:12%; border-radius:50%; background:var(--shadow)}
+.ripple{display:none; position:absolute; left:8%; right:8%; top:58%; height:18%; border-radius:50%; border:2px solid rgba(255,255,255,.75); animation:ripple 1.6s ease-out infinite}
+.piece.in-water .ripple{display:block}
+.piece.in-water .shadow{display:none}
+.piece.in-water .bob{clip-path:inset(0 0 27% 0); animation:swim 1.8s ease-in-out infinite}
+@keyframes swim{0%,100%{transform:translate(-3%,2%) rotate(-4deg)}50%{transform:translate(3%,-1%) rotate(4deg)}}
+@keyframes ripple{from{transform:scale(.7); opacity:.9}to{transform:scale(1.15); opacity:0}}
+
+.mark{display:grid; place-items:center}
+.mark.paw svg{width:36%; fill:var(--paw); filter:drop-shadow(0 1px 1px rgba(0,0,0,.25)); animation:pulse 1.1s ease-in-out infinite}
+.mark.jump::before{content:""; position:absolute; inset:14%; border-radius:50%; border:3px dashed var(--paw); animation:spin 7s linear infinite}
+.mark.bite::before{content:""; position:absolute; inset:5%; border-radius:50%; border:4px solid var(--bite); box-shadow:0 0 0 4px color-mix(in srgb, var(--bite) 30%, transparent); animation:pulse 1s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(.9); opacity:.75}50%{transform:scale(1.06); opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.p{position:absolute; width:10px; height:10px; margin:-5px 0 0 -5px; pointer-events:none}
+.p.star{width:14px; height:14px; margin:-7px 0 0 -7px; background:var(--accent); clip-path:polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)}
+.p.drop{border-radius:50% 50% 50% 0; background:#bfe9ff; border:1px solid #fff}
+.p.dust{border-radius:50%; background:#e9d7b0; opacity:.9}
+.p.confetti{width:8px; height:12px; margin:-6px 0 0 -4px; border-radius:2px}
+.pop{position:absolute; transform:translate(-50%,-50%); font-family:var(--font-display); font-size:22px; color:#fff; -webkit-text-stroke:1px rgba(0,0,0,.35); text-shadow:0 2px 0 rgba(0,0,0,.25); pointer-events:none; white-space:nowrap}
+
+.win{position:absolute; inset:0; z-index:5; display:grid; place-items:center; background:color-mix(in srgb, var(--bg) 45%, transparent); border-radius:18px}
+.win-card{background:var(--surface); border:1px solid var(--line); border-radius:18px; padding:18px 22px; display:grid; gap:12px; justify-items:center; text-align:center; max-width:86%; box-shadow:0 10px 30px var(--shadow)}
+.win-title{font-family:var(--font-display); font-size:20px; line-height:1.4}
+
+.btn{border:1px solid var(--line); background:var(--surface); border-radius:12px; padding:7px 16px; cursor:pointer; font-family:var(--font-display); font-size:16px}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent); border-color:var(--accent); color:var(--accent-ink)}
+
+.legend{display:flex; flex-wrap:wrap; gap:6px 16px; list-style:none; margin:0; padding:0; font-size:13px; color:var(--muted)}
+.legend li{display:flex; align-items:center; gap:6px}
+.sw{width:14px; height:14px; border-radius:4px; display:inline-block}
+.sw.w{background:var(--water-1)} .sw.t{background:var(--trap)} .sw.d{background:var(--den)}
+
+.panel{background:var(--surface); border:1px solid var(--line); border-radius:20px; padding:18px; display:grid; gap:14px; min-width:0}
+.checks{list-style:none; margin:0; padding:0; display:grid; gap:8px}
+.checks li{display:flex; align-items:center; gap:10px}
+.tick{flex:none; width:22px; height:22px; border-radius:50%; border:2px solid var(--line); display:grid; place-items:center; transition:background .2s, border-color .2s}
+.tick svg{width:13px; opacity:0; transition:opacity .2s}
+.checks li.done .tick{background:var(--accent); border-color:var(--accent)}
+.checks li.done .tick svg{opacity:1}
+.checks li.done span:last-child{color:var(--muted)}
+.panel-actions{display:flex; flex-wrap:wrap; align-items:center; gap:12px}
+.toggle{display:flex; align-items:center; gap:6px; font-size:14px; color:var(--muted); cursor:pointer}
+.panel .hint{font-size:13px; color:var(--muted)}
+
+.notes ul{margin:0; padding-left:1.2em; max-width:65ch; color:var(--muted)}
+.notes li+li{margin-top:4px}
+
+/* reduced motion */
+:root[data-motion="reduced"] .animal *,:root[data-motion="reduced"] .cell.water,:root[data-motion="reduced"] .ripple,:root[data-motion="reduced"] .mark *,:root[data-motion="reduced"] .mark::before{animation:none !important}
+:root[data-motion="reduced"] .animal .lift{transition:none}
+</style>
+
+<main>
+  <header class="intro">
+    <p class="eyebrow">jungle-chess · 美術原型 v0.1</p>
+    <h1>動物棋角色原型</h1>
+    <p class="lede">用程式畫出的 Q 版 SVG 動物，沒有用任何圖片檔。這頁用來判斷「每隻動物都會動」的感覺對不對：上面可以單獨觸發每隻動物的表情和動作，下面的小棋盤可以實際走走看。</p>
+  </header>
+
+  <section aria-labelledby="cast-h">
+    <div class="sec-head">
+      <h2 id="cast-h">表情與動作</h2>
+      <div class="seg" role="group" aria-label="棋子顏色">
+        <button type="button" data-side="r" aria-pressed="true">紅方</button>
+        <button type="button" data-side="b" aria-pressed="false">藍方</button>
+      </div>
+    </div>
+    <p class="sec-note">待機時每隻動物都有自己的小動作，也會隨機眨眼。紅方是實線外框，藍方是珠子外框，不靠顏色也分得出來。</p>
+    <div class="cast" id="cast"></div>
+  </section>
+
+  <section aria-labelledby="play-h">
+    <h2 id="play-h">小棋盤試玩</h2>
+    <p class="sec-note">這是正式棋盤的一小塊（7 欄 × 5 列），上方是藍方的陷阱和獸穴。雙方的動物都可以點，不分回合。點一隻動物，再點腳印走過去。</p>
+    <div class="play">
+      <div class="board-col">
+        <p class="bubble" id="bubble" aria-live="polite">點一隻動物開始吧！</p>
+        <div class="board-wrap" id="boardWrap">
+          <div class="board" id="board"></div>
+          <div class="layer pieces" id="piecesLayer"></div>
+          <div class="layer marks" id="marksLayer"></div>
+          <div class="layer fx" id="fxLayer"></div>
+          <div class="win" id="win" hidden>
+            <div class="win-card">
+              <p class="win-title" id="winText"></p>
+              <button type="button" class="btn primary" id="again">再玩一次</button>
+            </div>
+          </div>
+        </div>
+        <ul class="legend">
+          <li><span class="sw w"></span>河流（只有老鼠能下水）</li>
+          <li><span class="sw t"></span>陷阱</li>
+          <li><span class="sw d"></span>獸穴</li>
+        </ul>
+      </div>
+      <aside class="panel" aria-labelledby="try-h">
+        <h3 id="try-h">試試看</h3>
+        <ul class="checks" id="checks"></ul>
+        <p class="hint">動物被吃掉後，按「重新擺放」就會回來。</p>
+        <div class="panel-actions">
+          <button type="button" class="btn" id="reset">重新擺放</button>
+          <label class="toggle" for="motion"><input type="checkbox" id="motion">減少動態效果</label>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="notes" aria-labelledby="notes-h">
+    <h2 id="notes-h">這個原型沒有包含的</h2>
+    <ul>
+      <li>其他五隻動物（象、虎、豹、狼、狗），畫法會和這三隻一致。</li>
+      <li>音效和動物叫聲。</li>
+      <li>回合制、AI 對手和完整的勝負判定（這裡吃光對方不會結束遊戲）。</li>
+      <li>正式版會改寫成 React 元件並使用 Motion 動畫庫，這裡的表情、動作和節奏可以直接沿用。</li>
+    </ul>
+  </section>
+</main>
+
+<script>
+(() => {
+  const $ = s => document.querySelector(s);
+  const wait = ms => new Promise(r => setTimeout(r, ms));
+  const RANK = { rat: 1, cat: 2, lion: 7 };
+  const INFO = { rat: { name: '鼠', full: '老鼠' }, cat: { name: '貓', full: '貓咪' }, lion: { name: '獅', full: '獅子' } };
+  const SIDE_NAME = { r: '紅方', b: '藍方' };
+
+  /* ---------- motion preference ---------- */
+  let reduceMotion = false;
+  try { reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
+  const motionBox = $('#motion');
+  function setMotion(v) {
+    reduceMotion = v;
+    document.documentElement.dataset.motion = v ? 'reduced' : 'full';
+    motionBox.checked = v;
+  }
+  setMotion(reduceMotion);
+  motionBox.addEventListener('change', () => setMotion(motionBox.checked));
+
+  /* ---------- SVG art ---------- */
+  const f1 = n => Math.round(n * 10) / 10;
+  function face(o) {
+    const [a, b] = o.ex, y = o.ey, m = o.my;
+    const eye = x => `<g class="eye"><ellipse cx="${x}" cy="${y}" rx="3.5" ry="4.4" fill="#3a2a22"/><circle cx="${f1(x + 1.2)}" cy="${f1(y - 1.7)}" r="1.25" fill="#fff"/></g>`;
+    const happy = x => `<path d="M${f1(x - 4.2)} ${f1(y + 1.4)}Q${x} ${f1(y - 4.4)} ${f1(x + 4.2)} ${f1(y + 1.4)}"/>`;
+    const scared = x => `<circle cx="${x}" cy="${y}" r="5.4" fill="#fff" stroke="#3a2a22" stroke-width="1.4"/><circle cx="${x}" cy="${f1(y + .6)}" r="1.8" fill="#3a2a22"/>`;
+    return `<g fill="#ff8f8f" opacity=".45"><ellipse cx="${o.cx[0]}" cy="${o.cy}" rx="4.6" ry="2.8"/><ellipse cx="${o.cx[1]}" cy="${o.cy}" rx="4.6" ry="2.8"/></g>
+      <g class="eyes eyes-open">${eye(a)}${eye(b)}</g>
+      <g class="eyes eyes-happy">${happy(a)}${happy(b)}</g>
+      <g class="eyes eyes-scared">${scared(a)}${scared(b)}</g>
+      <g class="eyes eyes-squeeze"><path d="M${f1(a - 3.8)} ${f1(y - 3.8)}L${f1(a + 3)} ${y}L${f1(a - 3.8)} ${f1(y + 3.8)}"/><path d="M${f1(b + 3.8)} ${f1(y - 3.8)}L${f1(b - 3)} ${y}L${f1(b + 3.8)} ${f1(y + 3.8)}"/></g>
+      <g class="mouth mouth-normal"><path d="M45 ${m}Q47.5 ${f1(m + 3)} 50 ${m}Q52.5 ${f1(m + 3)} 55 ${m}"/></g>
+      <g class="mouth mouth-happy"><path d="M44.5 ${f1(m - 1)}Q50 ${f1(m + 8)} 55.5 ${f1(m - 1)}Z"/></g>
+      <g class="mouth mouth-scared"><ellipse cx="50" cy="${f1(m + 2)}" rx="2.4" ry="3"/></g>`;
+  }
+  const ART = {
+    lion() {
+      let outer = '', inner = '';
+      for (let i = 0; i < 12; i++) {
+        const a = i * Math.PI / 6, b = a + Math.PI / 12;
+        outer += `<circle cx="${f1(50 + 27 * Math.cos(a))}" cy="${f1(52 + 27 * Math.sin(a))}" r="10.5"/>`;
+        inner += `<circle cx="${f1(50 + 22 * Math.cos(b))}" cy="${f1(52 + 22 * Math.sin(b))}" r="8"/>`;
+      }
+      return `<g class="mane"><g fill="#d4832a"><circle cx="50" cy="52" r="28"/>${outer}</g><g fill="#e59a3a">${inner}</g></g>
+        <g fill="#f6c453"><circle cx="33" cy="35" r="7"/><circle cx="67" cy="35" r="7"/></g>
+        <g fill="#e8906a"><circle cx="33" cy="35" r="3.4"/><circle cx="67" cy="35" r="3.4"/></g>
+        <circle cx="50" cy="54" r="20.5" fill="#f6c453"/>
+        <ellipse cx="50" cy="63" rx="10" ry="7.2" fill="#fde9b8"/>
+        ${face({ ex: [42.5, 57.5], ey: 50, my: 64.6, cy: 58.5, cx: [36.5, 63.5] })}
+        <path d="M46.8 58.4h6.4l-3.2 3.3z" fill="#6b3b2a" stroke="#6b3b2a" stroke-width="2" stroke-linejoin="round"/>
+        <path d="M50 61.8v2.6" stroke="#6b3b2a" stroke-width="1.6" stroke-linecap="round"/>`;
+    },
+    cat() {
+      return `<g class="tail"><path d="M63 76C84 81 93 66 85 50" fill="none" stroke="#e39a4f" stroke-width="7" stroke-linecap="round"/><path d="M87.6 56.5C87.6 53.5 86.8 51.5 85 50" fill="none" stroke="#b86d2c" stroke-width="7" stroke-linecap="round"/></g>
+        <g class="ear ear-l"><path d="M29 43L31 19L47 31Z" fill="#f2b468" stroke="#f2b468" stroke-width="4" stroke-linejoin="round"/><path d="M32.6 37L33.6 25.5L41.5 31.8Z" fill="#f6a6ad"/></g>
+        <g class="ear ear-r"><path d="M71 43L69 19L53 31Z" fill="#f2b468" stroke="#f2b468" stroke-width="4" stroke-linejoin="round"/><path d="M67.4 37L66.4 25.5L58.5 31.8Z" fill="#f6a6ad"/></g>
+        <ellipse cx="50" cy="53" rx="24" ry="21" fill="#f5c27d"/>
+        <g stroke="#d98a3d" stroke-width="2.6" stroke-linecap="round"><path d="M50 33.6v5.6"/><path d="M44 35l1.4 4.8"/><path d="M56 35l-1.4 4.8"/></g>
+        <ellipse cx="45.6" cy="62" rx="5.4" ry="4.2" fill="#fff3e0"/><ellipse cx="54.4" cy="62" rx="5.4" ry="4.2" fill="#fff3e0"/>
+        ${face({ ex: [41, 59], ey: 50, my: 64.2, cy: 57.5, cx: [34.5, 65.5] })}
+        <path d="M47.7 57.4h4.6l-2.3 2.5z" fill="#ef8a9a" stroke="#ef8a9a" stroke-width="1.6" stroke-linejoin="round"/>
+        <g class="whiskers wl" stroke="#8a6a50" stroke-width="1.3" stroke-linecap="round"><path d="M38 59.5L23 56.5"/><path d="M38 62.5L23 64"/></g>
+        <g class="whiskers wr" stroke="#8a6a50" stroke-width="1.3" stroke-linecap="round"><path d="M62 59.5L77 56.5"/><path d="M62 62.5L77 64"/></g>`;
+    },
+    rat() {
+      return `<g class="rtail"><path d="M62 74C80 86 91 74 85 64C81 57 86 52 91 53" fill="none" stroke="#eba3b6" stroke-width="3.2" stroke-linecap="round"/></g>
+        <g class="ear ear-l"><circle cx="30" cy="34" r="13" fill="#b9b4cc"/><circle cx="30" cy="34" r="8" fill="#f4b7c6"/></g>
+        <g class="ear ear-r"><circle cx="70" cy="34" r="13" fill="#b9b4cc"/><circle cx="70" cy="34" r="8" fill="#f4b7c6"/></g>
+        <path d="M50 33C65 33 72 45 70.5 56.5C69 68.5 60 75 50 75C40 75 31 68.5 29.5 56.5C28 45 35 33 50 33Z" fill="#cfcadd"/>
+        <ellipse cx="50" cy="65" rx="11" ry="8" fill="#e9e6f1"/>
+        ${face({ ex: [42, 58], ey: 51, my: 67, cy: 59.5, cx: [36, 64] })}
+        <rect x="47.4" y="68.6" width="5.2" height="4.6" rx="1.2" fill="#fff" stroke="#9b97ad" stroke-width="1"/><path d="M50 68.8v4.2" stroke="#9b97ad" stroke-width=".8"/>
+        <g class="whiskers wl" stroke="#7f7a94" stroke-width="1.2" stroke-linecap="round"><path d="M41 63.5L27 59.5"/><path d="M41 66.5L27 67.5"/></g>
+        <g class="whiskers wr" stroke="#7f7a94" stroke-width="1.2" stroke-linecap="round"><path d="M59 63.5L73 59.5"/><path d="M59 66.5L73 67.5"/></g>
+        <circle class="nose" cx="50" cy="62" r="3.2" fill="#f08aa5"/>`;
+    }
+  };
+  function animalSVG(type) {
+    return `<svg viewBox="0 0 100 100" aria-hidden="true">
+      <circle class="plate" cx="50" cy="50" r="45"/><circle class="ring" cx="50" cy="50" r="45"/>
+      ${ART[type]()}
+      <g class="sweat"><path d="M75 28C79.5 34.5 79.5 38.5 75 40C70.5 38.5 70.5 34.5 75 28Z" fill="#8fd0f5" stroke="#fff" stroke-width="1.2"/></g>
+      <g class="badge"><circle cx="82" cy="82" r="12"/><text class="rank-text" x="82" y="86.6" text-anchor="middle">${RANK[type]}</text></g>
+    </svg>`;
+  }
+
+  /* blinking */
+  const blinkers = new Set();
+  setInterval(() => {
+    if (reduceMotion) return;
+    const now = performance.now();
+    for (const el of blinkers) {
+      if (!el.isConnected) { blinkers.delete(el); continue; }
+      if (now >= el._nextBlink) {
+        el.classList.add('blink');
+        setTimeout(() => el.classList.remove('blink'), 140);
+        el._nextBlink = now + 2200 + Math.random() * 3800;
+      }
+    }
+  }, 150);
+
+  function makeAnimal(type, side) {
+    const el = document.createElement('div');
+    el.className = `animal ${type}`;
+    el.dataset.side = side;
+    el.dataset.face = 'normal';
+    el.dataset.state = 'idle';
+    el.style.setProperty('--d', (-Math.random() * 3).toFixed(2) + 's');
+    el.innerHTML = `<div class="hop"><div class="lift"><div class="act"><div class="bob">${animalSVG(type)}</div></div></div></div>`;
+    el._nextBlink = performance.now() + 800 + Math.random() * 3000;
+    blinkers.add(el);
+    return el;
+  }
+
+  /* ---------- shared effects ---------- */
+  const SQUASH = [
+    { transform: 'scale(1,1)' }, { transform: 'scale(1.12,.86)', offset: .12 }, { transform: 'scale(.92,1.1)', offset: .35 },
+    { transform: 'scale(1,1)', offset: .75 }, { transform: 'scale(1.14,.84)', offset: .9 }, { transform: 'scale(1,1)' }
+  ];
+  function hopOnce(an, h = .22, dur = 420) {
+    if (reduceMotion) return wait(dur / 2);
+    const size = an.getBoundingClientRect().height;
+    an.querySelector('.act').animate(SQUASH, { duration: dur });
+    return an.querySelector('.hop').animate([
+      { transform: 'translateY(0)', easing: 'cubic-bezier(.25,.6,.45,1)' },
+      { transform: `translateY(${-size * h}px)`, offset: .5, easing: 'cubic-bezier(.55,0,.75,.4)' },
+      { transform: 'translateY(0)' }
+    ], { duration: dur }).finished;
+  }
+  function headshake(an) {
+    return an.querySelector('.act').animate([
+      { transform: 'rotate(0)' }, { transform: 'rotate(-14deg)' }, { transform: 'rotate(12deg)' },
+      { transform: 'rotate(-9deg)' }, { transform: 'rotate(6deg)' }, { transform: 'rotate(0)' }
+    ], { duration: reduceMotion ? 300 : 560, easing: 'ease-out' }).finished;
+  }
+  function centerIn(el, layer) {
+    const a = el.getBoundingClientRect(), b = layer.getBoundingClientRect();
+    return { x: a.left + a.width / 2 - b.left, y: a.top + a.height / 2 - b.top, size: a.width };
+  }
+  function burst(layer, x, y, kind, n, spread) {
+    if (reduceMotion) return;
+    for (let i = 0; i < n; i++) {
+      const s = document.createElement('span');
+      s.className = 'p ' + kind;
+      s.style.left = x + 'px'; s.style.top = y + 'px';
+      layer.appendChild(s);
+      const ang = kind === 'drop' ? -Math.PI / 2 + (Math.random() - .5) * 2.2 : Math.random() * Math.PI * 2;
+      const dist = spread * (.55 + Math.random() * .7);
+      const dx = Math.cos(ang) * dist, dy = Math.sin(ang) * dist;
+      const fall = kind === 'drop' ? spread * .8 : 0;
+      const rot = (Math.random() - .5) * 540;
+      s.animate([
+        { transform: 'translate(0,0) scale(.4)', opacity: 1 },
+        { transform: `translate(${dx}px,${dy}px) scale(1) rotate(${rot / 2}deg)`, opacity: 1, offset: .55 },
+        { transform: `translate(${dx * 1.15}px,${dy * 1.15 + fall}px) scale(.5) rotate(${rot}deg)`, opacity: 0 }
+      ], { duration: 560 + Math.random() * 320, easing: 'cubic-bezier(.2,.7,.3,1)' }).onfinish = () => s.remove();
+    }
+  }
+  function popText(layer, x, y, text) {
+    if (reduceMotion) return;
+    const s = document.createElement('span');
+    s.className = 'pop'; s.textContent = text;
+    s.style.left = x + 'px'; s.style.top = y + 'px';
+    layer.appendChild(s);
+    s.animate([
+      { transform: 'translate(-50%,-50%) scale(.5)', opacity: 0 },
+      { transform: 'translate(-50%,-90%) scale(1.15)', opacity: 1, offset: .3 },
+      { transform: 'translate(-50%,-160%) scale(1)', opacity: 0 }
+    ], { duration: 900, easing: 'ease-out' }).onfinish = () => s.remove();
+  }
+  const CONFETTI = ['#f5b82e', '#e4574a', '#3b7be0', '#7cc96a', '#f39ac0'];
+  function confetti(layer, n) {
+    if (reduceMotion) return;
+    const w = layer.clientWidth, h = layer.clientHeight;
+    for (let i = 0; i < n; i++) {
+      const s = document.createElement('span');
+      s.className = 'p confetti';
+      s.style.background = CONFETTI[i % CONFETTI.length];
+      s.style.left = (Math.random() * w) + 'px'; s.style.top = '-10px';
+      layer.appendChild(s);
+      const drift = (Math.random() - .5) * 80;
+      s.animate([
+        { transform: 'translate(0,0) rotate(0)', opacity: 1 },
+        { transform: `translate(${drift}px,${h + 30}px) rotate(${(Math.random() - .5) * 900}deg)`, opacity: .9 }
+      ], { duration: 1300 + Math.random() * 900, delay: Math.random() * 350, easing: 'cubic-bezier(.3,.1,.6,1)' }).onfinish = () => s.remove();
+    }
+  }
+  async function poof(an, layer) {
+    an.dataset.face = 'hurt';
+    await wait(reduceMotion ? 60 : 170);
+    const c = centerIn(an, layer);
+    const dur = reduceMotion ? 160 : 460;
+    const anim = an.querySelector('.act').animate([
+      { transform: 'scale(1)', opacity: 1 },
+      { transform: 'scale(1.18) rotate(-8deg)', opacity: 1, offset: .35 },
+      { transform: 'scale(0) rotate(200deg)', opacity: 0 }
+    ], { duration: dur, easing: 'ease-in', fill: 'forwards' });
+    setTimeout(() => { burst(layer, c.x, c.y, 'star', 12, c.size * .75); popText(layer, c.x, c.y - c.size * .3, '噗！'); }, dur * .4);
+    await anim.finished;
+    return anim;
+  }
+
+  /* ---------- cast showcase ---------- */
+  const CAST = [
+    { type: 'rat', meta: '會游泳，還能吃大象。待機：鼻子嗅嗅、鬍鬚抖動。' },
+    { type: 'cat', meta: '待機：甩尾巴，耳朵偶爾抖一下。' },
+    { type: 'lion', meta: '可以跳過河。待機：鬃毛蓬鬆擺動。' }
+  ];
+  const ACTIONS = [['happy', '開心'], ['scared', '害怕'], ['no', '搖頭'], ['cheer', '歡呼'], ['poof', '被吃掉']];
+  let castSide = 'r';
+  const castEl = $('#cast');
+  function renderCast() {
+    castEl.innerHTML = '';
+    for (const c of CAST) {
+      const card = document.createElement('article');
+      card.className = 'card';
+      card.innerHTML = `<div class="stage"><div class="layer fx"></div></div>
+        <div class="card-head"><h3>${INFO[c.type].full}</h3><span class="rank">等級 ${RANK[c.type]}</span></div>
+        <p class="meta">${c.meta}</p>
+        <div class="chips">${ACTIONS.map(([k, t]) => `<button type="button" class="chip" data-act="${k}">${t}</button>`).join('')}</div>`;
+      const stage = card.querySelector('.stage');
+      const an = makeAnimal(c.type, castSide);
+      stage.insertBefore(an, stage.firstChild);
+      const fx = stage.querySelector('.fx');
+      card.querySelectorAll('.chip').forEach(b => b.addEventListener('click', () => castAction(an, b.dataset.act, fx)));
+      castEl.appendChild(card);
+    }
+  }
+  async function castAction(an, act, fx) {
+    if (an._busy) return;
+    an._busy = true;
+    try {
+      if (act === 'happy') {
+        an.dataset.face = 'happy';
+        await hopOnce(an); await hopOnce(an);
+      } else if (act === 'scared') {
+        an.dataset.face = 'scared'; an.dataset.state = 'scared';
+        await wait(1600);
+      } else if (act === 'no') {
+        await headshake(an);
+      } else if (act === 'cheer') {
+        an.dataset.face = 'happy'; an.dataset.state = 'celebrate';
+        confetti(fx, 26);
+        await wait(1800);
+      } else if (act === 'poof') {
+        const old = await poof(an, fx);
+        await wait(650);
+        an.dataset.face = 'normal';
+        const back = an.querySelector('.act').animate([
+          { transform: 'scale(0)', opacity: 0 }, { transform: 'scale(1.15)', opacity: 1, offset: .6 }, { transform: 'scale(1)', opacity: 1 }
+        ], { duration: reduceMotion ? 150 : 420, easing: 'ease-out' });
+        old.cancel();
+        await back.finished;
+      }
+    } finally {
+      an.dataset.face = 'normal'; an.dataset.state = 'idle';
+      an._busy = false;
+    }
+  }
+  document.querySelectorAll('.seg button').forEach(b => b.addEventListener('click', () => {
+    castSide = b.dataset.side;
+    document.querySelectorAll('.seg button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+    renderCast();
+  }));
+  renderCast();
+
+  /* ---------- playground rules ---------- */
+  const W = 7, H = 5, DIRS = [[-1, 0], [1, 0], [0, -1], [0, 1]];
+  const inB = (r, c) => r >= 0 && r < H && c >= 0 && c < W;
+  const isWater = (r, c) => r >= 1 && r <= 3 && (c === 1 || c === 2 || c === 4 || c === 5);
+  const trapOwner = (r, c) => ((r === 0 && (c === 2 || c === 4)) || (r === 1 && c === 3)) ? 'b' : null;
+  const denOwner = (r, c) => (r === 0 && c === 3) ? 'b' : null;
+  const START = [
+    { type: 'lion', side: 'r', r: 2, c: 0 },
+    { type: 'rat', side: 'r', r: 4, c: 2 },
+    { type: 'cat', side: 'b', r: 2, c: 3 }
+  ];
+  let pieces = [], selected = null, cands = [], busy = false, gameOver = false, winner = null;
+  const at = (r, c) => pieces.find(p => p.r === r && p.c === c) || null;
+  const isTrapped = p => { const o = trapOwner(p.r, p.c); return !!o && o !== p.side; };
+
+  function evaluate(p, r, c, kind, pre) {
+    const base = { r, c, kind };
+    if (pre) return { ...base, ok: false, reason: pre };
+    if (denOwner(r, c) === p.side) return { ...base, ok: false, reason: 'ownDen' };
+    const t = at(r, c);
+    if (!t) return { ...base, ok: true };
+    if (t.side === p.side) return { ...base, ok: false, reason: 'own', target: t };
+    if (isWater(p.r, p.c) !== isWater(r, c)) return { ...base, ok: false, reason: 'bank', target: t };
+    if (trapOwner(r, c) === p.side) return { ...base, ok: true, target: t };
+    const eff = isTrapped(t) ? 0 : RANK[t.type];
+    if (RANK[p.type] >= eff) return { ...base, ok: true, target: t };
+    return { ...base, ok: false, reason: 'rank', target: t };
+  }
+  function candidates(p) {
+    const out = [];
+    for (const [dr, dc] of DIRS) {
+      let r = p.r + dr, c = p.c + dc;
+      if (!inB(r, c)) continue;
+      if (isWater(r, c) && p.type !== 'rat') {
+        out.push({ r, c, kind: 'step', ok: false, reason: 'water' });
+        if (p.type === 'lion') {
+          let blocked = false;
+          while (inB(r, c) && isWater(r, c)) { if (at(r, c) && at(r, c).type === 'rat') blocked = true; r += dr; c += dc; }
+          if (inB(r, c)) out.push(evaluate(p, r, c, 'jump', blocked ? 'blocked' : null));
+        }
+        continue;
+      }
+      out.push(evaluate(p, r, c, 'step'));
+    }
+    return out;
+  }
+  function reasonText(p, k) {
+    const me = INFO[p.type].full;
+    switch (k.reason) {
+      case 'water': return p.type === 'lion' ? '獅子不會游泳，但可以一口氣跳過河！點對岸的腳印試試看。' : `只有老鼠會游泳喔！${me}不能下水。`;
+      case 'blocked': return '河裡有老鼠擋住，獅子跳不過去！';
+      case 'ownDen': return '那是自己的家（獸穴），自己人不能進去喔！';
+      case 'bank': return isWater(p.r, p.c) ? '老鼠在水裡，不能咬岸上的動物喔！' : '岸上的動物咬不到水裡的老鼠喔！';
+      case 'rank': return `${me}比${INFO[k.target.type].full}小，吃不掉牠！`;
+      default: return '這裡不能走喔！';
+    }
+  }
+
+  /* ---------- playground view ---------- */
+  const boardEl = $('#board'), piecesLayer = $('#piecesLayer'), marksLayer = $('#marksLayer'), fxLayer = $('#fxLayer');
+  const bubble = $('#bubble');
+  const cellSize = () => boardEl.getBoundingClientRect().width / W;
+  const PAW = '<svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="15.5" rx="5" ry="4.2"/><circle cx="6.3" cy="9.6" r="2.2"/><circle cx="9.9" cy="6.4" r="2.2"/><circle cx="14.1" cy="6.4" r="2.2"/><circle cx="17.7" cy="9.6" r="2.2"/></svg>';
+
+  for (let r = 0; r < H; r++) for (let c = 0; c < W; c++) {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'cell';
+    let label = '草地';
+    if (isWater(r, c)) { b.classList.add('water'); label = '河流'; }
+    else if (denOwner(r, c)) { b.classList.add('den'); b.innerHTML = '<span class="cave"></span><span class="tag">獸穴</span>'; label = '藍方獸穴'; }
+    else if (trapOwner(r, c)) { b.classList.add('trap'); b.innerHTML = '<span class="trap-net"></span><span class="tag">陷阱</span>'; label = '藍方陷阱'; }
+    else if ((r + c) % 2) b.classList.add('alt');
+    b.dataset.r = r; b.dataset.c = c;
+    b.setAttribute('aria-label', `第 ${r + 1} 列第 ${c + 1} 格，${label}`);
+    b.addEventListener('click', () => onCell(r, c));
+    boardEl.appendChild(b);
+  }
+
+  function say(text) {
+    bubble.textContent = text;
+    if (!reduceMotion) bubble.animate([{ transform: 'scale(.97)' }, { transform: 'scale(1)' }], { duration: 180, easing: 'ease-out' });
+  }
+  function setPos(p) { p.el.style.setProperty('--r', p.r); p.el.style.setProperty('--c', p.c); }
+  function refresh(p) {
+    const trapped = isTrapped(p);
+    p.an.classList.toggle('trapped', trapped);
+    p.an.querySelector('.rank-text').textContent = trapped ? 0 : RANK[p.type];
+    let state = 'idle';
+    if (gameOver && p === winner) state = 'celebrate';
+    else if (p === selected) state = 'selected';
+    else if (trapped) state = 'scared';
+    p.an.dataset.state = state;
+    p.an.dataset.face = p.faceLock || (state === 'selected' || state === 'celebrate' ? 'happy' : state === 'scared' ? 'scared' : 'normal');
+  }
+  const refreshAll = () => pieces.forEach(refresh);
+  function flashFace(p, faceName, ms) {
+    p.faceLock = faceName; refresh(p);
+    setTimeout(() => { p.faceLock = null; if (p.el.isConnected) refresh(p); }, ms);
+  }
+  function renderMarks() {
+    marksLayer.innerHTML = '';
+    boardEl.querySelectorAll('.cell.sel').forEach(x => x.classList.remove('sel'));
+    if (!selected) return;
+    boardEl.children[selected.r * W + selected.c].classList.add('sel');
+    for (const k of cands) {
+      if (!k.ok) continue;
+      const m = document.createElement('span');
+      m.className = 'mark ' + (k.target ? 'bite' : 'paw') + (k.kind === 'jump' ? ' jump' : '');
+      m.style.setProperty('--r', k.r); m.style.setProperty('--c', k.c);
+      if (!k.target) m.innerHTML = PAW;
+      marksLayer.appendChild(m);
+    }
+  }
+  function renderPieces() {
+    piecesLayer.innerHTML = '';
+    for (const p of pieces) {
+      const el = document.createElement('div');
+      el.className = 'piece';
+      el.innerHTML = '<div class="shadow"></div><div class="ripple"></div>';
+      p.an = makeAnimal(p.type, p.side);
+      el.appendChild(p.an);
+      p.el = el;
+      setPos(p);
+      el.classList.toggle('in-water', isWater(p.r, p.c));
+      piecesLayer.appendChild(el);
+      refresh(p);
+    }
+  }
+
+  /* checklist */
+  const CHECKS = [
+    ['jump', '讓獅子跳過河'], ['capture', '吃掉一隻動物'], ['swim', '讓老鼠下水游泳'],
+    ['block', '老鼠擋在河裡，獅子跳不過去'], ['refuse', '讓小動物去吃大動物（會搖頭）'],
+    ['trap', '走進藍方的陷阱'], ['den', '走進藍方的獸穴']
+  ];
+  const TICK = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3.2 3L13 4.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  const checksEl = $('#checks');
+  checksEl.innerHTML = CHECKS.map(([id, t]) => `<li data-id="${id}"><span class="tick" style="color:var(--accent-ink)">${TICK}</span><span>${t}</span></li>`).join('');
+  const done = new Set();
+  function markDone(id) {
+    if (done.has(id)) return;
+    done.add(id);
+    const li = checksEl.querySelector(`[data-id="${id}"]`);
+    li.classList.add('done');
+    if (!reduceMotion) li.querySelector('.tick').animate([{ transform: 'scale(.4)' }, { transform: 'scale(1.25)' }, { transform: 'scale(1)' }], { duration: 380, easing: 'ease-out' });
+  }
+
+  /* interaction */
+  function select(p) {
+    selected = p;
+    cands = candidates(p);
+    refreshAll(); renderMarks();
+    const me = INFO[p.type].full;
+    if (isTrapped(p)) say(`${me}：救命！我掉進陷阱了！`);
+    else if (p.type === 'lion' && cands.some(k => k.reason === 'blocked')) { say('獅子：河裡有老鼠擋著，我跳不過去…'); markDone('block'); }
+    else if (p.type === 'lion') say('獅子：我可以跳過河喔！');
+    else if (p.type === 'rat') say(isWater(p.r, p.c) ? '老鼠：游泳好好玩～' : '老鼠：我會游泳！');
+    else say('貓咪：喵～要去哪裡呢？');
+  }
+  function deselect() { selected = null; cands = []; refreshAll(); renderMarks(); }
+  async function refuse(p, msg) {
+    say(msg);
+    busy = true;
+    await headshake(p.an);
+    busy = false;
+  }
+  function onCell(r, c) {
+    if (busy || gameOver) return;
+    const t = at(r, c);
+    if (!selected) { if (t) select(t); else say('先點一隻動物喔！'); return; }
+    if (t === selected) { deselect(); say('點一隻動物開始吧！'); return; }
+    const k = cands.find(x => x.r === r && x.c === c);
+    if (t && t.side === selected.side && !(k && k.ok)) { select(t); return; }
+    if (!k) { refuse(selected, '一次只能走上下左右一格喔！'); return; }
+    if (!k.ok) {
+      if (k.reason === 'rank') markDone('refuse');
+      if (k.reason === 'blocked') markDone('block');
+      refuse(selected, reasonText(selected, k));
+      return;
+    }
+    doMove(selected, k);
+  }
+
+  function animateTravel(p, from, to) {
+    const cs = cellSize();
+    const x0 = from.c * cs, y0 = from.r * cs, x1 = to.c * cs, y1 = to.r * cs;
+    setPos(p);
+    const jump = to.kind === 'jump';
+    const dur = jump ? 760 : 400;
+    if (reduceMotion) return { dur: 0, done: Promise.resolve() };
+    p.el.style.zIndex = 10;
+    const arc = cs * (jump ? 1.05 : .3);
+    const dir = Math.sign(x1 - x0);
+    const a = p.el.animate([{ transform: `translate(${x0}px,${y0}px)` }, { transform: `translate(${x1}px,${y1}px)` }], { duration: dur, easing: 'cubic-bezier(.4,0,.6,1)' });
+    p.an.querySelector('.hop').animate([
+      { transform: 'translateY(0)', easing: 'cubic-bezier(.25,.6,.45,1)' },
+      { transform: `translateY(${-arc}px)`, offset: .5, easing: 'cubic-bezier(.55,0,.75,.4)' },
+      { transform: 'translateY(0)' }
+    ], { duration: dur });
+    p.an.querySelector('.act').animate(jump ? [
+      { transform: 'scale(1,1) rotate(0)' }, { transform: 'scale(1.15,.82) rotate(0)', offset: .1 },
+      { transform: `scale(.9,1.12) rotate(${dir * 12}deg)`, offset: .4 }, { transform: `scale(1,1) rotate(${dir * -6}deg)`, offset: .8 },
+      { transform: 'scale(1.18,.8) rotate(0)', offset: .9 }, { transform: 'scale(1,1) rotate(0)' }
+    ] : SQUASH, { duration: dur });
+    p.el.querySelector('.shadow').animate([
+      { transform: 'scale(1)', opacity: 1 }, { transform: 'scale(.5)', opacity: .45, offset: .5 }, { transform: 'scale(1)', opacity: 1 }
+    ], { duration: dur });
+    return { dur, done: a.finished.then(() => { p.el.style.zIndex = ''; }) };
+  }
+  function cellCenter(r, c, dy = 0) { const cs = cellSize(); return { x: (c + .5) * cs, y: (r + .5 + dy) * cs, cs }; }
+
+  async function doMove(p, k) {
+    busy = true;
+    const from = { r: p.r, c: p.c };
+    const victim = k.target || null;
+    const fromWater = isWater(from.r, from.c), toWater = isWater(k.r, k.c);
+    const wasTrapped = isTrapped(p);
+    selected = null; cands = []; renderMarks();
+    p.r = k.r; p.c = k.c;
+    refresh(p);
+    if (victim) { victim.faceLock = 'hurt'; refresh(victim); }
+    if (fromWater && !toWater) {
+      p.el.classList.remove('in-water');
+      const s = cellCenter(from.r, from.c, .1); burst(fxLayer, s.x, s.y, 'drop', 9, s.cs * .55);
+    }
+    const travel = animateTravel(p, from, k);
+    if (victim) setTimeout(async () => {
+      victim.el.style.zIndex = 1;
+      await poof(victim.an, fxLayer);
+      victim.el.remove();
+    }, travel.dur * .6);
+    await travel.done;
+    if (victim) { pieces = pieces.filter(x => x !== victim); await wait(reduceMotion ? 0 : 120); }
+
+    const me = INFO[p.type].full;
+    let msg = '嘿咻！';
+    if (fromWater && !toWater) msg = '老鼠上岸了！';
+    if (toWater && !fromWater) {
+      p.el.classList.add('in-water');
+      const s = cellCenter(k.r, k.c, .1); burst(fxLayer, s.x, s.y, 'drop', 12, s.cs * .6);
+      popText(fxLayer, s.x, s.y - s.cs * .4, '撲通！');
+      msg = '撲通！老鼠下水游泳囉！'; markDone('swim');
+    }
+    if (k.kind === 'jump') {
+      const s = cellCenter(k.r, k.c, .4); burst(fxLayer, s.x, s.y, 'dust', 8, s.cs * .45);
+      msg = '咻～獅子跳過河了！'; markDone('jump');
+    }
+    if (victim) { msg = `${me}吃掉了${INFO[victim.type].full}！`; markDone('capture'); flashFace(p, 'happy', 900); }
+    if (isTrapped(p)) { msg = `${me}掉進陷阱了！等級變成 0，誰都可以吃掉牠！`; markDone('trap'); }
+    else if (wasTrapped) msg = `${me}逃出陷阱了，等級恢復！`;
+    const den = denOwner(k.r, k.c);
+    if (den && den !== p.side) { win(p); busy = false; return; }
+    say(msg);
+    refresh(p);
+    busy = false;
+  }
+
+  function win(p) {
+    gameOver = true; winner = p;
+    markDone('den');
+    refreshAll();
+    confetti(fxLayer, 46);
+    say(`${INFO[p.type].full}衝進藍方獸穴了！`);
+    setTimeout(() => {
+      $('#winText').textContent = `${INFO[p.type].full}衝進獸穴，${SIDE_NAME[p.side]}獲勝！`;
+      $('#win').hidden = false;
+      $('#again').focus();
+    }, reduceMotion ? 0 : 900);
+  }
+  function reset() {
+    gameOver = false; winner = null; selected = null; cands = []; busy = false;
+    $('#win').hidden = true;
+    pieces = START.map(s => ({ ...s }));
+    renderPieces(); renderMarks();
+    say('點一隻動物開始吧！');
+  }
+  $('#reset').addEventListener('click', reset);
+  $('#again').addEventListener('click', reset);
+  reset();
+})();
+</script>
