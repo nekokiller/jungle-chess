@@ -4,6 +4,7 @@ import type { Side } from '../../engine';
 import { LEVELS } from '../../ai/levels';
 import { useGame, type Settings } from '../../session/store';
 import { SIDE, ui } from '../../copy/zh-TW';
+import { audio } from '../../audio/manager';
 import { Animal } from '../Animal/Animal';
 import './setup.css';
 
@@ -28,7 +29,10 @@ function Choice<T extends string | boolean>({ label, value, options, onChange, w
             className="option"
             aria-pressed={o.value === value}
             aria-label={o.aria}
-            onClick={() => onChange(o.value)}
+            onClick={() => {
+              onChange(o.value);
+              audio.play('ui.tap');
+            }}
           >
             {o.label}
           </button>

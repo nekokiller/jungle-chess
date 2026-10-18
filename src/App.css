@@ -13,7 +13,7 @@
 }
 .top{grid-area:top; width:calc(var(--cell) * 7); max-width:100%; display:flex; align-items:center; justify-content:space-between; gap:12px}
 .top h1{margin:0; font-family:var(--font-display); font-weight:400; font-size:26px; line-height:1.2}
-.turn{margin:0; display:flex; align-items:center; gap:8px; font-family:var(--font-display); font-size:17px}
+.turn{margin:0 0 0 auto; display:flex; align-items:center; gap:8px; font-family:var(--font-display); font-size:17px}
 .turn b{font-weight:400; color:#fff; border-radius:999px; padding:2px 14px; background:var(--red)}
 .turn[data-side="blue"] b{background:var(--blue)}
 
@@ -29,7 +29,16 @@
 .actions{display:flex; flex-wrap:wrap; align-items:center; gap:10px}
 .actions .btn{min-height:44px}
 .summary{font-size:14px; color:var(--muted)}
+.sound-btn{
+  width:44px; height:44px; flex:none; display:grid; place-items:center; padding:0; cursor:pointer;
+  border:1px solid var(--line); border-radius:999px; background:var(--surface); color:var(--ink); touch-action:manipulation;
+}
+.sound-btn[aria-pressed="false"]{color:var(--muted)}
+.sound-btn:hover{border-color:var(--accent)}
+.prefs{display:flex; flex-wrap:wrap; align-items:center; gap:6px 18px}
 .toggle{display:flex; align-items:center; gap:6px; font-size:14px; color:var(--muted); cursor:pointer; justify-self:start}
+.toggle:has(:disabled){opacity:.5; cursor:default}
+.volume input{width:110px; accent-color:var(--accent)}
 .legend{display:flex; flex-wrap:wrap; gap:6px 16px; list-style:none; margin:0; padding:0; font-size:13px; color:var(--muted)}
 .legend li{display:flex; align-items:center; gap:6px}
 .sw{width:14px; height:14px; border-radius:4px; display:inline-block}
