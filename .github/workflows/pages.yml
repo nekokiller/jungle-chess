@@ -1,0 +1,53 @@
+# 手動發佈到 GitHub Pages：Actions 分頁 →「發佈到 GitHub Pages」→ Run workflow（可選要發佈的分支，預設 main）。
+# 合併或 push 都不會自動發佈。測試或 build 失敗時不發佈，網站維持舊版。
+name: 發佈到 GitHub Pages
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 同一時間只跑一次發佈；正在發佈的不取消，避免網站只更新一半。
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+
+      # 遊戲只用 MP3：拿掉 WAV 母檔、音效試聽頁（BGM 試聽要載入 WAV）與說明文件。
+      - name: 排除 WAV 母檔與音效試聽頁
+        run: |
+          find dist -name '*.wav' -delete
+          find dist -name '*.md' -delete
+          rm -rf dist/audio-preview
+          if find dist -name '*.wav' | grep -q .; then echo '還有 WAV 沒拿掉'; exit 1; fi
+          du -sh dist
+
+      - uses: actions/configure-pages@v6
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5
