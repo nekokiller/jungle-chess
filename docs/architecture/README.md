@@ -301,7 +301,8 @@ type GameEvent =
   1. 在 Search Console 按「驗證」
   2. 提交 `sitemap.xml`
   3. 在「網址審查」要求建立索引
-- 注意：驗證標記要一直保留，拿掉後 Search Console 會失去擁有權。
+- 另外放了 HTML 檔案驗證 `public/google0fb6d6b099984447.html`（不進離線快取），和驗證標記是雙重保險。
+- 注意：驗證標記與驗證檔都要一直保留，兩個都拿掉後 Search Console 會失去擁有權。
 
 ## 9. 開發階段
 

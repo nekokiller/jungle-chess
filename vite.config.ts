@@ -31,7 +31,8 @@ export default defineConfig({
       workbox: {
         // 遊戲音效與動物叫聲只預先快取網頁版 MP3；WAV 母檔與音效試聽頁不放進離線快取。BGM 見下方。
         globPatterns: ['**/*.{js,css,html,svg,png,ico,webmanifest}', 'audio/{sfx,animals}/*.mp3'],
-        globIgnores: ['**/node_modules/**', 'audio-preview/**'],
+        // Google Search Console 的驗證檔不是遊戲的一部分，不放進離線快取。
+        globIgnores: ['**/node_modules/**', 'audio-preview/**', 'google*.html'],
         cleanupOutdatedCaches: true,
         // 字型來自 Google Fonts：第一次連網時存起來，之後離線也有圓體字。
         runtimeCaching: [
