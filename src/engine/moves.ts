@@ -37,7 +37,7 @@ export interface Move {
 
 export type MoveCheck = { ok: true; move: Move } | { ok: false; reason: IllegalReason };
 
-const DIRS: readonly Pos[] = [
+export const DIRS: readonly Pos[] = [
   { row: -1, col: 0 },
   { row: 1, col: 0 },
   { row: 0, col: -1 },
@@ -50,7 +50,7 @@ const canJump = (piece: Piece) => piece.type === 'lion' || piece.type === 'tiger
  * 從 from 朝 dir 方向跳河的落點。前方第一格不是水就回傳 null。
  * blocked：路徑上的水格裡有任何一隻鼠（不分敵我）。
  */
-function jumpLanding(board: Board, from: Pos, dir: Pos): { to: Pos; blocked: boolean } | null {
+export function jumpLanding(board: Board, from: Pos, dir: Pos): { to: Pos; blocked: boolean } | null {
   let pos = { row: from.row + dir.row, col: from.col + dir.col };
   if (!inBounds(pos) || !isWater(pos)) return null;
   let blocked = false;
